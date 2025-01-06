@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>RazorWare.GfxCore</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTK" Version="4.0.0" />
+    <PackageReference Include="SharpFont" Version="4.0.1" />
+    <PackageReference Include="SharpFont.Dependencies" Version="2.6.0" />
+
+    <Using Include="OpenTK.Graphics.OpenGL4" />
+    <Using Include="OpenTK.Windowing.Common" />
+    <Using Include="OpenTK.Windowing.Desktop" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components/" />
+  </ItemGroup>
+
+</Project>

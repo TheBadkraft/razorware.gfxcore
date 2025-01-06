@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"dotnet.testWindow.useTestingPlatformProtocol": true,
+		"csharp.debug.logging.diagnosticsLog.dispatcherMessages": "normal",
+		"cmake.ctest.testExplorerIntegrationEnabled": false,
+		"dotnet-test-explorer.testProjectPath": ".test/*"
+	},
+}
