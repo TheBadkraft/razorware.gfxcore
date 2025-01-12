@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.application", "dev\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.testing", "testing\GfxCore.Testing\gfxcore.testing.csproj", "{E3FAF241-B69B-427D-848A-1100FFB5A3A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "razorware.gfxcore.domain", "RazorWare.GfxCore.Domain\razorware.gfxcore.domain.csproj", "{55FECA50-E5FA-4C22-9680-6D26E332B1FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{E3FAF241-B69B-427D-848A-1100FFB5A3A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3FAF241-B69B-427D-848A-1100FFB5A3A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3FAF241-B69B-427D-848A-1100FFB5A3A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

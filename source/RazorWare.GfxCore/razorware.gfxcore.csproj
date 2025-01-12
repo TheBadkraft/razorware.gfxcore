@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="resources\LiberationMono-Regular.ttf" />
+    <ProjectReference Include="../RazorWare.GfxCore.Domain/razorware.gfxcore.domain.csproj" />
+
+    <!-- <EmbeddedResource Include="resources\LiberationMono-Regular.ttf" /> -->
     
     <PackageReference Include="OpenTK" Version="4.0.0" />
-    <PackageReference Include="FreeTypeSharp" Version="3.0.0" />
-    <PackageReference Include="StbImageSharp" Version="2.30.15" />
 
     <Using Include="OpenTK.Graphics.OpenGL4" />
     <Using Include="OpenTK.Windowing.Common" />
