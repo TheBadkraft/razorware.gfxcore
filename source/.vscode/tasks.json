@@ -1,0 +1,31 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "build tests",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/testing/GfxCore.Testing/gfxcore.testing.csproj"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "build app",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/RazorWare.GfxCore/razorware.gfxcore.csproj"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+	]
+}
