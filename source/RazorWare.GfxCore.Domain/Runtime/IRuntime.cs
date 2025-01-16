@@ -10,5 +10,5 @@ public interface IRuntime : IDisposable
     /// </summary>
     /// <typeparam name="T">The type of the executable action.</typeparam>
     /// <param name="action">The action to run.</param>
-    void Run<T>(Func<T> action) where T : IExecutable;
+    void Run<T>(Func<T> action) where T : IFacade;
 }

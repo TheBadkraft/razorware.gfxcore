@@ -2,8 +2,8 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "shell",
 			"label": "build tests",
+			"type": "shell",
 			"command": "dotnet",
 			"args": [
 				"build",
@@ -11,12 +11,12 @@
 			],
 			"group": {
 				"kind": "build",
-				"isDefault": true
+				"isDefault": false
 			}
 		},
 		{
+			"label": "build gfxcore",
 			"type": "shell",
-			"label": "build app",
 			"command": "dotnet",
 			"args": [
 				"build",
@@ -24,7 +24,33 @@
 			],
 			"group": {
 				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "build dev",
+			"type": "shell",
+			"command": "/bin/bash",
+			"args": [
+				"${workspaceFolder}/dev/build_dev.sh"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
 				"isDefault": true
+			}
+		},
+		{
+			"label": "build ext",
+			"type": "shell",
+			"command": "/bin/bash",
+			"args": [
+				"${workspaceFolder}/dev/build_ext.sh"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": false
 			}
 		},
 	]

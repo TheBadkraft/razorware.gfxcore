@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../RazorWare.GfxCore.Domain/razorware.gfxcore.domain.csproj" />
-
-    <!-- <EmbeddedResource Include="resources\LiberationMono-Regular.ttf" /> -->
     
     <PackageReference Include="OpenTK" Version="4.0.0" />
 

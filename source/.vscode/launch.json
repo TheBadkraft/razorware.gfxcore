@@ -5,12 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "gfxcore window",
+      "name": "gfxcore application",
       "type": "coreclr",
       "request": "launch",
       //"console": "externalTerminal",
       "program": "${workspaceFolder}/dev/GfxCore.Application/bin/Debug/net9.0/gfxcore.application",
-      "preLaunchTask": "build app"
+      "preLaunchTask": ""
     },
     {
       "name": "tests",

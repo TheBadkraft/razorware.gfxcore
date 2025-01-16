@@ -1,27 +1,54 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using RazorWare.GfxCore.Extensibility;
+using RazorWare.GfxCore.Extensibility.Logging;
 using RazorWare.GfxCore.Facade;
+using RazorWare.GfxCore.Registries;
 using RazorWare.GfxCore.Runtime;
 
 
 using (var app = new Application())
 {
-    app.Run(() => new Applet()
-    {
-    });
+    //  get the service registry
+    IServiceRegistry serviceRegistry = (IServiceRegistry)app.ResolveRegistry<IGfxService>();
+    //  get the logger
+    ILogger logger = serviceRegistry.Resolve<ILogger>();
+
+    app.Run(() => new Applet(logger));
 }
 
 
+/*
+    This is the application class that will initialize the GfxCore runtime 
+    from the base GfxApplication.
+*/
 public class Application : GfxApplication
 {
 
 }
 
-public class Applet : IExecutable
+/*
+    This class is a simple example of an application facade. There is
+    no window ... just the console. Launching the framework, we 
+    can create a simple application facade that will load the GfxCore 
+    runtime, intialize its registries, and then run the application.
+*/
+public class Applet : IFacade
 {
-    public Applet()
+    private ILogger Logger { get; init; }
+
+    /// <summary>
+    /// Get or set the flag indicating if the application should stop.
+    /// </summary>
+    public bool IsStopRequested { get; set; } = false;
+
+    //  this applet could be anything, but for now, it's just a logger
+    public Applet(ILogger logger)
     {
+        Logger = logger;
+
         //  gfxcore application will test the extension loading and dependency resolution
-        Console.WriteLine("GfxCore Application Loading ...");
+        Logger.Log("GfxCore Application Loading ...");
     }
+
 }
