@@ -4,14 +4,16 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <RootNamespace>RazorWare.GfxCore</RootNamespace>
+    <RootNamespace>RazorWare.GfxCore.Sdk.Desktop</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../RazorWare.GfxCore.Domain/razorware.gfxcore.domain.csproj" />
+    <EmbeddedResource Include="resources\LiberationMono-Regular.ttf" />
     
     <PackageReference Include="OpenTK" Version="4.0.0" />
+    <PackageReference Include="FreeTypeSharp" Version="3.0.0" />
+    <PackageReference Include="StbImageSharp" Version="2.30.15" />
 
     <Using Include="OpenTK.Graphics.OpenGL4" />
     <Using Include="OpenTK.Windowing.Common" />

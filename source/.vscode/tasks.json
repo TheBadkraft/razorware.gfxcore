@@ -1,0 +1,57 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build tests",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/testing/GfxCore.Testing/gfxcore.testing.csproj"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "build gfxcore",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/RazorWare.GfxCore/razorware.gfxcore.csproj"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "build dev",
+			"type": "shell",
+			"command": "/bin/bash",
+			"args": [
+				"${workspaceFolder}/dev/build_dev.sh"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "build ext",
+			"type": "shell",
+			"command": "/bin/bash",
+			"args": [
+				"${workspaceFolder}/dev/build_ext.sh"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+	]
+}

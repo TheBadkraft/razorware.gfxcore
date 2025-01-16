@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "razorware.gfxcore", "RazorWare.GfxCore\razorware.gfxcore.csproj", "{CF1F7C86-EB78-4A9F-AB2D-EC1A4875D191}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".dev", ".dev", "{5AFEF1F8-8D4F-D9FF-043C-C96A1483E5B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.application", "GfxCore.Application\gfxcore.application.csproj", "{D6BAD784-6620-4381-B57E-7FDE053EC11A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".test", ".test", "{D1880E22-0A08-58BE-DC49-6C04D09DB70B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "razorware.gfxcore", "RazorWare.GfxCore\razorware.gfxcore.csproj", "{CF1F7C86-EB78-4A9F-AB2D-EC1A4875D191}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.application", "dev\GfxCore.Application\gfxcore.application.csproj", "{EE8C2D8C-71B8-4DE6-AF34-B37FBC2EAEB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "razorware.gfxcore.domain", "RazorWare.GfxCore.Domain\razorware.gfxcore.domain.csproj", "{55FECA50-E5FA-4C22-9680-6D26E332B1FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.testing", "testing\GfxCore.Testing\gfxcore.testing.csproj", "{ADA08139-EAD3-47FC-866C-AAE86068AE56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.resources.bar", "dev\GfxCore.Resources.Bar\gfxcore.resources.bar.csproj", "{E6855B33-FA89-4B89-A529-855E35C45838}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,15 +27,29 @@ Global
 		{CF1F7C86-EB78-4A9F-AB2D-EC1A4875D191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF1F7C86-EB78-4A9F-AB2D-EC1A4875D191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF1F7C86-EB78-4A9F-AB2D-EC1A4875D191}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D6BAD784-6620-4381-B57E-7FDE053EC11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6BAD784-6620-4381-B57E-7FDE053EC11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6BAD784-6620-4381-B57E-7FDE053EC11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6BAD784-6620-4381-B57E-7FDE053EC11A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE8C2D8C-71B8-4DE6-AF34-B37FBC2EAEB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE8C2D8C-71B8-4DE6-AF34-B37FBC2EAEB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE8C2D8C-71B8-4DE6-AF34-B37FBC2EAEB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE8C2D8C-71B8-4DE6-AF34-B37FBC2EAEB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55FECA50-E5FA-4C22-9680-6D26E332B1FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADA08139-EAD3-47FC-866C-AAE86068AE56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADA08139-EAD3-47FC-866C-AAE86068AE56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADA08139-EAD3-47FC-866C-AAE86068AE56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADA08139-EAD3-47FC-866C-AAE86068AE56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6855B33-FA89-4B89-A529-855E35C45838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6855B33-FA89-4B89-A529-855E35C45838}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6855B33-FA89-4B89-A529-855E35C45838}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6855B33-FA89-4B89-A529-855E35C45838}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D6BAD784-6620-4381-B57E-7FDE053EC11A} = {5AFEF1F8-8D4F-D9FF-043C-C96A1483E5B8}
+		{EE8C2D8C-71B8-4DE6-AF34-B37FBC2EAEB4} = {5AFEF1F8-8D4F-D9FF-043C-C96A1483E5B8}
+		{ADA08139-EAD3-47FC-866C-AAE86068AE56} = {D1880E22-0A08-58BE-DC49-6C04D09DB70B}
+		{E6855B33-FA89-4B89-A529-855E35C45838} = {5AFEF1F8-8D4F-D9FF-043C-C96A1483E5B8}
 	EndGlobalSection
 EndGlobal

@@ -1,16 +1,23 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "gfxcore window",
-            "type": "coreclr",
-            "request": "launch",
-            //"console": "externalTerminal",
-            "program": "${workspaceFolder}/GfxCore.Application/bin/Debug/net9.0/gfxcore.application",
-            "preLaunchTask": ""
-        },
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "gfxcore application",
+      "type": "coreclr",
+      "request": "launch",
+      //"console": "externalTerminal",
+      "program": "${workspaceFolder}/dev/GfxCore.Application/bin/Debug/net9.0/gfxcore.application",
+      "preLaunchTask": ""
+    },
+    {
+      "name": "tests",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/../lib/mindforge.testrunner",
+      "preLaunchTask": "build tests"
+    },
+  ]
 }
