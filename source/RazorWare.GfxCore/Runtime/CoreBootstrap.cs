@@ -7,9 +7,12 @@ using RazorWare.GfxCore.Registries;
 namespace RazorWare.GfxCore.Runtime;
 
 /*
-    The GfxCore bootstrap implementation initializes the core systems.
+    The GfxCore bootstrap implementation initializes the core systems and instantiates the core registries.
 */
 
+/// <summary>
+/// The core bootstrap implementation for GfxCore.
+/// </summary>
 internal sealed class CoreBootstrap : GfxBootstrap
 {
     internal CoreBootstrap(bool testMode) : base(testMode)
@@ -20,6 +23,6 @@ internal sealed class CoreBootstrap : GfxBootstrap
 
 
         Logger = services.Register<ILogger>(new ConsoleLogger());
-        Logger.Log("GfxCore loaded ...");
+        Logger.Log("[GfxCore :: Bootstrap] Registries Initialized");
     }
 }

@@ -9,12 +9,7 @@ using RazorWare.GfxCore.Runtime;
 
 using (var app = new Application())
 {
-    //  get the service registry
-    IServiceRegistry serviceRegistry = (IServiceRegistry)app.ResolveRegistry<IGfxService>();
-    //  get the logger
-    ILogger logger = serviceRegistry.Resolve<ILogger>();
-
-    app.Run(() => new Applet(logger));
+    app.Launch();
 }
 
 
@@ -22,9 +17,24 @@ using (var app = new Application())
     This is the application class that will initialize the GfxCore runtime 
     from the base GfxApplication.
 */
+#nullable disable
 public class Application : GfxApplication
 {
+    public IServiceRegistry GfxServices => Registries.Resolve<IServiceRegistry>();
 
+    private ILogger Logger { get; set; }
+
+    protected override void OnLoad()
+    {
+        //  get the default logger
+        Logger = GfxServices.Resolve<ILogger>();
+    }
+
+    protected override void OnLaunch()
+    {
+        //  run the application
+        Run(() => new Applet(Logger));
+    }
 }
 
 /*
@@ -48,7 +58,7 @@ public class Applet : IFacade
         Logger = logger;
 
         //  gfxcore application will test the extension loading and dependency resolution
-        Logger.Log("GfxCore Application Loading ...");
+        Logger.Log("[GfxCore :: Application] Loaded");
     }
 
 }

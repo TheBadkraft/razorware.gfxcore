@@ -10,6 +10,9 @@ namespace RazorWare.GfxCore.Runtime;
     This is the GfxCore.Domain bootstrap implementation.
 */
 
+/// <summary>
+/// The base class for the GfxCore bootstrap.
+/// </summary>
 internal abstract class GfxBootstrap
 {
     //  bootstrap the domain and load extensions
@@ -23,38 +26,50 @@ internal abstract class GfxBootstrap
     //  the list of extensions
     private static readonly List<string> _extensions = new List<string>();
 
+    private bool IsTesMode { get; init; }
+
     /// <summary>
     /// The registry manager
     /// </summary>
     protected readonly RegistryManager _registries;
+    /// <summary>
+    /// The default logger
+    /// </summary>
+    protected ILogger Logger { get; init; }
 
     /// <summary>
     /// Get the extension path.
     /// </summary>
     internal DirectoryInfo ExtensionPath => new DirectoryInfo(ext_path);
+    /// <summary>
+    /// Get the registries.
+    /// </summary>
+    internal RegistryManager Registries => _registries;
 
-
-    protected ILogger Logger { get; init; }
-
+    /// <summary>
+    /// Initializes the GfxCore bootstrap.
+    /// </summary>
+    /// <param name="testMode">If true, the bootstrap will only resolve dependencies and not initialize the extensions.</param>
     protected GfxBootstrap(bool testMode)
     {
+        IsTesMode = testMode;
         _registries = new();
     }
 
 
     //  load the extensions - if testMode, only resolve dependencies,
     //  do not initialize the extensions
-    internal void Initialize(bool testMode)
+    internal void Initialize()
     {
-        Logger.Log($"Initializing GfxCore Bootstrap ...");
+        Logger.Log($"[GfxCore :: Bootstrap] Begin Extension Discovery");
 
         var curr_dir = string.Empty;
-        Logger.Log($"Current Directory: {curr_dir = Directory.GetCurrentDirectory()}");
-        Logger.Log($"Extension Path: {ext_path = Path.Combine(curr_dir, EXTENSION_PATH)}");
+        Logger.Log($"{"",15}Current Directory: {curr_dir = Directory.GetCurrentDirectory()}");
+        Logger.Log($"{"",15}Extension Path: {ext_path = Path.Combine(curr_dir, EXTENSION_PATH)}");
 
         if (!Directory.Exists(ext_path))
         {
-            Logger.Log("Creating Extension Path ...");
+            Logger.Log($"{"",15}Creating Extension Path: {ext_path}");
             Directory.CreateDirectory(ext_path);
         }
 

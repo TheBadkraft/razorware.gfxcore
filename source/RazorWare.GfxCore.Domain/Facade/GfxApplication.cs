@@ -16,32 +16,33 @@ public abstract partial class GfxApplication : IRuntime
 
     private IFacade executable = null;
 
+    public RegistryManager Registries => _bootstrap.Registries;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="GfxApplication"/> class.
     /// </summary>
     protected GfxApplication(bool testMode = false)
     {
-        _bootstrap = GfxBootstrap.Load(testMode);
+        if ((_bootstrap = GfxBootstrap.Load(testMode)) == null)
+        {
+            throw new InvalidOperationException("The GfxCore bootstrap failed to load.");
+        }
+        _bootstrap.Initialize();
+
+        //  TODO: bootstrap status check
 
         if (!testMode)
         {
             //  initialize the application
+            OnLoad();
         }
     }
 
     /// <summary>
-    /// Resolves a registry type
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public IRegistry<T> ResolveRegistry<T>()
-    {
-        return _bootstrap.ResolveRegistry<T>();
-    }
-    /// <summary>
     /// Starts the application runtime
     /// </summary>
+    /// <typeparam name="T">The facade type</typeparam>
+    /// <param name="getExecutable">The function to get the executable</param>
     public virtual void Run<T>(Func<T> getExecutable) where T : IFacade
     {
         if (executable != null)
@@ -66,7 +67,30 @@ public abstract partial class GfxApplication : IRuntime
                 executable.IsStopRequested = true;
             });
         }
+
+        //  close the application
+        OnClose();
     }
+    /// <summary>
+    /// Launches the application
+    /// </summary>
+    public void Launch()
+    {
+        OnLaunch();
+    }
+
+    /// <summary>
+    /// Called when the application is loaded
+    /// </summary>
+    protected virtual void OnLoad() { }
+    /// <summary>
+    /// Called when the application is launched
+    /// </summary>
+    protected virtual void OnLaunch() { }
+    /// <summary>
+    /// Called when the application is closed
+    /// </summary>
+    protected virtual void OnClose() { }
 
     /// <summary>
     /// Disposes of the application
