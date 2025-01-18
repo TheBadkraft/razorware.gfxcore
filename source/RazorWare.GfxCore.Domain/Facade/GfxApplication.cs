@@ -1,5 +1,6 @@
 
 using System.Runtime.CompilerServices;
+using RazorWare.GfxCore.Events;
 using RazorWare.GfxCore.Registries;
 using RazorWare.GfxCore.Runtime;
 
@@ -17,31 +18,35 @@ public abstract partial class GfxApplication : IRuntime
     private IFacade executable = null;
 
     /// <summary>
+    /// Get the registry manager
+    /// </summary>
+    public RegistryManager Registries { get; private set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="GfxApplication"/> class.
     /// </summary>
     protected GfxApplication(bool testMode = false)
     {
-        _bootstrap = GfxBootstrap.Load(testMode);
+        if ((_bootstrap = GfxBootstrap.Load(testMode, OnBootstrapInitialized)) == null)
+        {
+            throw new InvalidOperationException("The GfxCore bootstrap failed to load.");
+        }
+        _bootstrap.Initialize();
+
+        //  TODO: bootstrap status check
 
         if (!testMode)
         {
             //  initialize the application
+            OnLoad();
         }
     }
 
     /// <summary>
-    /// Resolves a registry type
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public IRegistry<T> ResolveRegistry<T>()
-    {
-        return _bootstrap.ResolveRegistry<T>();
-    }
-    /// <summary>
     /// Starts the application runtime
     /// </summary>
+    /// <typeparam name="T">The facade type</typeparam>
+    /// <param name="getExecutable">The function to get the executable</param>
     public virtual void Run<T>(Func<T> getExecutable) where T : IFacade
     {
         if (executable != null)
@@ -66,7 +71,35 @@ public abstract partial class GfxApplication : IRuntime
                 executable.IsStopRequested = true;
             });
         }
+
+        //  close the application
+        OnClose();
     }
+    /// <summary>
+    /// Launches the application
+    /// </summary>
+    public void Launch()
+    {
+        OnLaunch();
+    }
+
+    /// <summary>
+    /// Called when the application is loaded
+    /// </summary>
+    protected virtual void OnLoad() { }
+    /// <summary>
+    /// Called when the application is launched
+    /// </summary>
+    protected virtual void OnLaunch() { }
+    /// <summary>
+    /// Called when the application is closed
+    /// </summary>
+    protected virtual void OnClose() { }
+    /// <summary>
+    /// Log a message.
+    /// </summary>
+    /// <param name="message">The message to log.</param>
+    protected abstract void Log(string message);
 
     /// <summary>
     /// Disposes of the application
@@ -76,4 +109,9 @@ public abstract partial class GfxApplication : IRuntime
         //  clean up any resources
     }
 
+    //  when the bootstrap is initialized
+    private void OnBootstrapInitialized(BootstrapInitializedEvent e)
+    {
+        Registries = e.Registries;
+    }
 }

@@ -16,3 +16,13 @@ public interface IGfxResource
 {
     string Name { get; }
 }
+
+public interface IGfxEventSource
+{
+    string Name { get; }
+}
+
+public interface IGfxCommandTarget
+{
+    string Name { get; }
+}

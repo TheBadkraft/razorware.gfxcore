@@ -15,9 +15,9 @@ echo "Copying gfxcore & gfxcore.domain to the lib folder..."
 yes | cp -f -vi $working_dir/RazorWare.GfxCore/$debug/razorware.gfxcore.dll $dev_dir/lib/
 yes | cp -f -vi $working_dir/RazorWare.GfxCore/$debug/razorware.gfxcore.domain.dll $dev_dir/lib/
 
-#   build gfxcore.application
-echo "Building gfxcore.application..."
-dotnet build $dev_dir/GfxCore.Application/gfxcore.application.csproj
+# #   build gfxcore.application
+# echo "Building gfxcore.application..."
+# dotnet build $dev_dir/GfxCore.Application/gfxcore.application.csproj
 #   copy gfxcore to the gfxcore.application debug directory
 echo "Copying gfxcore.dll to the gfxcore.application $debug directory..."
 yes | cp -f -vi $dev_dir/lib/razorware.gfxcore.dll $dev_dir/GfxCore.Application/$debug/

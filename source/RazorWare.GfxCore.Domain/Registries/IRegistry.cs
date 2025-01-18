@@ -1,5 +1,3 @@
-using System;
-using RazorWare.GfxCore.Extensibility;
 
 namespace RazorWare.GfxCore.Registries;
 
@@ -38,4 +36,8 @@ public interface IRegistry
     /// The registry name
     /// </summary>
     string Name { get; }
+    /// <summary>
+    /// The registry type
+    /// </summary>
+    Type Type { get; }
 }

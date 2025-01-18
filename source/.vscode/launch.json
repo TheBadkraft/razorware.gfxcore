@@ -5,15 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "gfxcore application",
+      "name": "run dev app",
       "type": "coreclr",
       "request": "launch",
-      //"console": "externalTerminal",
+      "console": "externalTerminal",
       "program": "${workspaceFolder}/dev/GfxCore.Application/bin/Debug/net9.0/gfxcore.application",
-      "preLaunchTask": ""
+      "preLaunchTask": "build dev app"
     },
     {
-      "name": "tests",
+      "name": "run tests",
       "type": "coreclr",
       "request": "launch",
       "program": "${workspaceFolder}/../lib/mindforge.testrunner",

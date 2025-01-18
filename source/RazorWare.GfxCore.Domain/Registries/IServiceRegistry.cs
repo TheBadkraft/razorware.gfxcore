@@ -35,3 +35,13 @@ public interface ISystemRegistry : IRegistry<IGfxSystem> { }
 /// Resource registry interface
 /// </summary>
 public interface IResourceRegistry : IRegistry<IGfxResource> { }
+
+/// <summary>
+/// Event source registry interface
+/// </summary>
+public interface IEventSourceRegistry : IRegistry<IGfxEventSource> { }
+
+/// <summary>
+/// Command target registry interface
+/// </summary>
+public interface ICommandTargetRegistry : IRegistry<IGfxCommandTarget> { }

@@ -15,24 +15,27 @@
 			}
 		},
 		{
-			"label": "build gfxcore",
+			"label": "build dev app",
 			"type": "shell",
 			"command": "dotnet",
 			"args": [
 				"build",
-				"${workspaceFolder}/RazorWare.GfxCore/razorware.gfxcore.csproj"
+				"${workspaceFolder}/dev/GfxCore.Application/gfxcore.application.csproj"
 			],
 			"group": {
 				"kind": "build",
 				"isDefault": false
-			}
+			},
+			"dependsOn": [
+				"build gfx"
+			]
 		},
 		{
-			"label": "build dev",
+			"label": "build gfx",
 			"type": "shell",
 			"command": "/bin/bash",
 			"args": [
-				"${workspaceFolder}/dev/build_dev.sh"
+				"${workspaceFolder}/.vscode/build_gfx.sh"
 			],
 			"problemMatcher": [],
 			"group": {
@@ -45,7 +48,7 @@
 			"type": "shell",
 			"command": "/bin/bash",
 			"args": [
-				"${workspaceFolder}/dev/build_ext.sh"
+				"${workspaceFolder}/.vscode/build_ext.sh"
 			],
 			"problemMatcher": [],
 			"group": {

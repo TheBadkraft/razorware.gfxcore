@@ -1,6 +1,6 @@
 
 using System.Reflection;
-
+using RazorWare.GfxCore.Events;
 using RazorWare.GfxCore.Extensibility.Logging;
 using RazorWare.GfxCore.Registries;
 
@@ -10,6 +10,9 @@ namespace RazorWare.GfxCore.Runtime;
     This is the GfxCore.Domain bootstrap implementation.
 */
 
+/// <summary>
+/// The base class for the GfxCore bootstrap.
+/// </summary>
 internal abstract class GfxBootstrap
 {
     //  bootstrap the domain and load extensions
@@ -23,38 +26,60 @@ internal abstract class GfxBootstrap
     //  the list of extensions
     private static readonly List<string> _extensions = new List<string>();
 
+    private readonly RegistryManager _registries;
+
     /// <summary>
-    /// The registry manager
+    /// Determine if bootstrap in test mode
     /// </summary>
-    protected readonly RegistryManager _registries;
+    /// <remarks>
+    /// In test mode the bootstrap will only resolve extension dependencies, 
+    /// not intializing the extensions.
+    /// </remarks>
+    protected bool IsTestMode { get; init; }
 
     /// <summary>
     /// Get the extension path.
     /// </summary>
     internal DirectoryInfo ExtensionPath => new DirectoryInfo(ext_path);
 
-
-    protected ILogger Logger { get; init; }
-
+    /// <summary>
+    /// Initializes the GfxCore bootstrap.
+    /// </summary>
+    /// <param name="testMode">If TRUE, the bootstrap will only resolve dependencies and not initialize the extensions.</param>
+    /// <remarks>
+    /// In test mode the bootstrap will only resolve extension dependencies, 
+    /// not intializing the extensions.
+    /// </remarks>
     protected GfxBootstrap(bool testMode)
     {
-        _registries = new();
+        IsTestMode = testMode;
+        OnLoad(_registries = new());
     }
 
+    /// <summary>
+    /// When overriden in a derived class, execute any load logic.
+    /// </summary>
+    /// <param name="registries">The registry manager</param>
+    protected virtual void OnLoad(RegistryManager registries) { }
+    /// <summary>
+    /// Log a message.
+    /// </summary>
+    /// <param name="message">The message to log.</param>
+    protected abstract void Log(string message);
 
     //  load the extensions - if testMode, only resolve dependencies,
     //  do not initialize the extensions
-    internal void Initialize(bool testMode)
+    internal void Initialize()
     {
-        Logger.Log($"Initializing GfxCore Bootstrap ...");
+        Log($"[GfxCore :: Bootstrap] Begin Extension Discovery");
 
         var curr_dir = string.Empty;
-        Logger.Log($"Current Directory: {curr_dir = Directory.GetCurrentDirectory()}");
-        Logger.Log($"Extension Path: {ext_path = Path.Combine(curr_dir, EXTENSION_PATH)}");
+        Log($"{"",15}Current Directory: {curr_dir = Directory.GetCurrentDirectory()}");
+        Log($"{"",15}Extension Path: {ext_path = Path.Combine(curr_dir, EXTENSION_PATH)}");
 
         if (!Directory.Exists(ext_path))
         {
-            Logger.Log("Creating Extension Path ...");
+            Log($"{"",15}Creating Extension Path: {ext_path}");
             Directory.CreateDirectory(ext_path);
         }
 
@@ -62,6 +87,7 @@ internal abstract class GfxBootstrap
 
         // LoadExtensions();
     }
+
     /// <summary>
     /// Resolves a registry by type: ex. IGfxSystem, IGfxResource
     /// </summary>
@@ -76,14 +102,13 @@ internal abstract class GfxBootstrap
 
         return (IRegistry<T>)registry;
     }
-
     /// <summary>
     /// Loads the bootstrap concrete implementation in GfxCore
     /// </summary>
     /// <param name="testMode"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    internal static GfxBootstrap Load(bool testMode)
+    internal static GfxBootstrap Load(bool testMode, Action<BootstrapInitializedEvent> onInitialized)
     {
         //  load the assembly
         var loadPath = Path.Combine(GetExecutingDirectory(), GFX_CORE_DLL);
@@ -112,7 +137,14 @@ internal abstract class GfxBootstrap
             .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
             .Single(c => c.GetParameters().Length == 1 && c.GetParameters()[0].ParameterType == typeof(bool));
         //  return the instance            
-        return ctor != null ? (GfxBootstrap)ctor.Invoke(args) : throw new InvalidOperationException("A valid bootstrap constuctor was not found.");
+        var bootstrap = ctor != null ? (GfxBootstrap)ctor.Invoke(args) : throw new InvalidOperationException("A valid bootstrap constuctor was not found.");
+        onInitialized(new BootstrapInitializedEvent(bootstrap._registries)
+        {
+            Sender = bootstrap,
+        });
+        bootstrap.Log("[GfxCore :: Bootstrap] Bootstrap Initialized");
+
+        return bootstrap;
     }
 
     //  get the executing directory

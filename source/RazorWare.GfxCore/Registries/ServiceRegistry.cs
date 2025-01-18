@@ -7,7 +7,10 @@ namespace RazorWare.GfxCore.Registries;
 /// </summary>
 public class ServiceRegistry : GfxRegistry<IGfxService>, IServiceRegistry
 {
-    public ServiceRegistry() : base("ServiceRegistry") { }
+    public ServiceRegistry() : base(nameof(ServiceRegistry))
+    {
+        Type = typeof(IServiceRegistry);
+    }
 
     /// <summary>
     /// Register a service to the framework
@@ -57,18 +60,3 @@ public class ServiceRegistry : GfxRegistry<IGfxService>, IServiceRegistry
     }
 }
 
-/// <summary>
-/// The system registry.
-/// </summary>
-public class SystemRegistry : GfxRegistry<IGfxSystem>, ISystemRegistry
-{
-    public SystemRegistry() : base("SystemRegistry") { }
-}
-
-/// <summary>
-/// The resource registry.
-/// </summary>
-public class ResourceRegistry : GfxRegistry<IGfxResource>, IResourceRegistry
-{
-    public ResourceRegistry() : base("ResourceRegistry") { }
-}

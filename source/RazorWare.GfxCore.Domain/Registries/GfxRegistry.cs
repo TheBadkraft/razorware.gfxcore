@@ -14,10 +14,12 @@ public abstract class GfxRegistry<TRegItem> : IRegistry<TRegItem>
     /// Get the registry name
     /// </summary>
     public string Name { get; protected init; }
+    public Type Type { get; protected init; }
 
     protected GfxRegistry(string name)
     {
         Name = name;
+        Type = typeof(TRegItem);
     }
 
     /// <summary>
