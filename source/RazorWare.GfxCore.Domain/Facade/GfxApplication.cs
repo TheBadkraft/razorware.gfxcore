@@ -1,5 +1,6 @@
 
 using System.Runtime.CompilerServices;
+using RazorWare.GfxCore.Events;
 using RazorWare.GfxCore.Registries;
 using RazorWare.GfxCore.Runtime;
 
@@ -16,14 +17,17 @@ public abstract partial class GfxApplication : IRuntime
 
     private IFacade executable = null;
 
-    public RegistryManager Registries => _bootstrap.Registries;
+    /// <summary>
+    /// Get the registry manager
+    /// </summary>
+    public RegistryManager Registries { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GfxApplication"/> class.
     /// </summary>
     protected GfxApplication(bool testMode = false)
     {
-        if ((_bootstrap = GfxBootstrap.Load(testMode)) == null)
+        if ((_bootstrap = GfxBootstrap.Load(testMode, OnBootstrapInitialized)) == null)
         {
             throw new InvalidOperationException("The GfxCore bootstrap failed to load.");
         }
@@ -91,6 +95,11 @@ public abstract partial class GfxApplication : IRuntime
     /// Called when the application is closed
     /// </summary>
     protected virtual void OnClose() { }
+    /// <summary>
+    /// Log a message.
+    /// </summary>
+    /// <param name="message">The message to log.</param>
+    protected abstract void Log(string message);
 
     /// <summary>
     /// Disposes of the application
@@ -100,4 +109,9 @@ public abstract partial class GfxApplication : IRuntime
         //  clean up any resources
     }
 
+    //  when the bootstrap is initialized
+    private void OnBootstrapInitialized(BootstrapInitializedEvent e)
+    {
+        Registries = e.Registries;
+    }
 }

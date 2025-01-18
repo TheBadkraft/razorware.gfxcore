@@ -24,16 +24,29 @@ public class Application : GfxApplication
 
     private ILogger Logger { get; set; }
 
+    /// <summary>
+    /// Raised when the <see cref="GfxApplication"/> is loaded.
+    /// </summary>
     protected override void OnLoad()
     {
         //  get the default logger
         Logger = GfxServices.Resolve<ILogger>();
     }
-
+    /// <summary>
+    /// Raised when the <see cref="GfxApplication"/> is launched.
+    /// </summary>
     protected override void OnLaunch()
     {
         //  run the application
         Run(() => new Applet(Logger));
+    }
+    /// <summary>
+    /// Implement the logging function.
+    /// </summary>
+    /// <param name="message"><inheritdoc/></param>
+    protected override void Log(string message)
+    {
+        Logger.Log(message);
     }
 }
 
