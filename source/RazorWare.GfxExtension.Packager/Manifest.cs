@@ -62,14 +62,7 @@ public class Manifest
 
         //  load the json file from the path
         file = Path.Combine(path, file);
-
-
-
-
-
-
-
-
+        string json = File.ReadAllText(file);
         //  materialize the manifest
         manifest = JsonSerializer.Deserialize<Manifest>(json);
     }
