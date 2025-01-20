@@ -17,6 +17,11 @@ public class EventPipeline : IEventPipeline
     /// </summary>
     public static IEventPipeline Instance => _INSTANCE.Value;
 
+    /// <summary>
+    /// Get the name of the event pipeline.
+    /// </summary>
+    public string Name => "EventPipeline";
+
     //  private constructor
     private EventPipeline() { }
 

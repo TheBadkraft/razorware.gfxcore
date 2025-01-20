@@ -1,5 +1,4 @@
 
-using Microsoft.Win32;
 using RazorWare.GfxCore.Events;
 using RazorWare.GfxCore.Extensibility;
 using RazorWare.GfxCore.Extensibility.Logging;
@@ -22,24 +21,18 @@ internal sealed class CoreBootstrap : GfxBootstrap
     /// <summary>
     /// The default logger
     /// </summary>
-    private ILogger Logger { get; init; }
+    private ILogger Logger { get; set; }
+    /// <summary>
+    /// The event pipeline
+    /// </summary>
+    private IEventPipeline Events { get; set; }
 
     internal CoreBootstrap(bool testMode) : base(testMode)
     {
-        var services = Registries.Register<IServiceRegistry>(typeof(IGfxService), new ServiceRegistry());
-        Registries.Register<ISystemRegistry>(typeof(IGfxSystem), new SystemRegistry());
-        Registries.Register<IResourceRegistry>(typeof(IGfxResource), new ResourceRegistry());
-
-        if (!Registries.CanResolve<IEventSourceRegistry>())
-        {
-            throw new InvalidOperationException("Event registry not found");
-        }
-
-        Logger = services.Register<ILogger>(new ConsoleLogger());
         Logger.Log("[GfxCore :: Bootstrap] Registries Loaded:");
         foreach (var registry in Registries)
         {
-            Logger.Log($"{"",15}{registry.Name,-25} ({Registries.CanResolve(registry.Type)})");
+            Logger.Log($"{"",5}{registry.Name,-25} ({Registries.CanResolve(registry.Type)})");
         }
     }
 
@@ -47,9 +40,19 @@ internal sealed class CoreBootstrap : GfxBootstrap
     /// <inheritdoc/>
     /// </summary>
     /// <param name="registries"><inheritdoc/></param>
-    protected override void OnLoad(RegistryManager registries)
+    protected override void OnInitialize(RegistryManager registries)
     {
         Registries = registries;
+
+        var services = Registries.Register<IServiceRegistry>(typeof(IGfxService), new ServiceRegistry());
+        Registries.Register<ISystemRegistry>(typeof(IGfxSystem), new SystemRegistry());
+        Registries.Register<IResourceRegistry>(typeof(IGfxResource), new ResourceRegistry());
+
+        Logger = services.Register<ILogger>(new ConsoleLogger());
+
+        var commands = Registries.Resolve<ICommandTargetRegistry>();
+        Events = commands.Register<IEventPipeline>(typeof(IGfxCommandTarget), EventPipeline.Instance);
+        Events.Subscribe<LogEvent>(e => Logger.Log(e.Message));
     }
     /// <summary>
     /// <inheritdoc/>

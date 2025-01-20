@@ -1,9 +1,11 @@
+using RazorWare.GfxCore.Extensibility;
+
 namespace RazorWare.GfxCore.Events;
 
 /// <summary>
 /// The event pipeline interface.
 /// </summary>
-public interface IEventPipeline
+public interface IEventPipeline : IGfxCommandTarget
 {
     /// <summary>
     /// Subscribe to an event.

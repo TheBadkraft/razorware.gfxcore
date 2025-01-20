@@ -45,3 +45,18 @@ public class BootstrapInitializedEvent : GfxEvent
         AutoUnsub = true;
     }
 }
+
+/// <summary>
+/// Raise the log event to write a message to the default logger.
+/// </summary>
+public class LogEvent : GfxEvent
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LogEvent"/> class.
+    /// </summary>
+    /// <param name="message">The log message</param>
+    public LogEvent(string message)
+    {
+        Message = message;
+    }
+}

@@ -1,7 +1,7 @@
 
 using System.Reflection;
 using RazorWare.GfxCore.Events;
-using RazorWare.GfxCore.Extensibility.Logging;
+using RazorWare.GfxCore.Extensibility;
 using RazorWare.GfxCore.Registries;
 
 namespace RazorWare.GfxCore.Runtime;
@@ -19,14 +19,9 @@ internal abstract class GfxBootstrap
 
     //  assumption: the gfxcore.dll is in the same directory as the domain
     private const string GFX_CORE_DLL = "razorware.gfxcore.dll";
-    private const string EXTENSION_PATH = "mods";
-
-    private static string ext_path;
-
-    //  the list of extensions
-    private static readonly List<string> _extensions = new List<string>();
 
     private readonly RegistryManager _registries;
+    private readonly ExtensionLoader _loader;
 
     /// <summary>
     /// Determine if bootstrap in test mode
@@ -36,11 +31,6 @@ internal abstract class GfxBootstrap
     /// not intializing the extensions.
     /// </remarks>
     protected bool IsTestMode { get; init; }
-
-    /// <summary>
-    /// Get the extension path.
-    /// </summary>
-    internal DirectoryInfo ExtensionPath => new DirectoryInfo(ext_path);
 
     /// <summary>
     /// Initializes the GfxCore bootstrap.
@@ -53,59 +43,57 @@ internal abstract class GfxBootstrap
     protected GfxBootstrap(bool testMode)
     {
         IsTestMode = testMode;
-        OnLoad(_registries = new());
+        _registries = new();
+
+        //  now we notify that the bootstrap is initialized
+        OnBootstrapInitialize(this);
+        _loader = new(_registries);
     }
 
     /// <summary>
     /// When overriden in a derived class, execute any load logic.
     /// </summary>
     /// <param name="registries">The registry manager</param>
-    protected virtual void OnLoad(RegistryManager registries) { }
+    protected virtual void OnInitialize(RegistryManager registries) { }
     /// <summary>
     /// Log a message.
     /// </summary>
     /// <param name="message">The message to log.</param>
     protected abstract void Log(string message);
 
-    //  load the extensions - if testMode, only resolve dependencies,
-    //  do not initialize the extensions
-    internal void Initialize()
+    //  make sure we have the basic registries
+    private static void OnBootstrapInitialize(GfxBootstrap bootstrap)
     {
-        Log($"[GfxCore :: Bootstrap] Begin Extension Discovery");
-
-        var curr_dir = string.Empty;
-        Log($"{"",15}Current Directory: {curr_dir = Directory.GetCurrentDirectory()}");
-        Log($"{"",15}Extension Path: {ext_path = Path.Combine(curr_dir, EXTENSION_PATH)}");
-
-        if (!Directory.Exists(ext_path))
+        //  these registries are required for basic functionality
+        if (!bootstrap._registries.CanResolve<IEventSourceRegistry>())
         {
-            Log($"{"",15}Creating Extension Path: {ext_path}");
-            Directory.CreateDirectory(ext_path);
+            throw new InvalidOperationException("EventSource registry not found");
+        }
+        if (!bootstrap._registries.CanResolve<ICommandTargetRegistry>())
+        {
+            throw new InvalidOperationException("CommandTarget registry not found");
+        }
+        if (!bootstrap._registries.CanResolve<IExtensionRegistry>())
+        {
+            throw new InvalidOperationException("Extension registry not found");
         }
 
-        //  load the extensions
-
-        // LoadExtensions();
+        bootstrap.OnInitialize(bootstrap._registries);
     }
 
     /// <summary>
-    /// Resolves a registry by type: ex. IGfxSystem, IGfxResource
+    /// Begin loading the extensions.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    internal IRegistry<T> ResolveRegistry<T>()
+    internal void LoadExtensions()
     {
-        if (!_registries.TryResolve(typeof(T), out var registry))
-        {
-            throw new ArgumentException($"{typeof(T)} is not found in registries");
-        }
-
-        return (IRegistry<T>)registry;
+        _loader.DiscoverExtensions();
     }
+
     /// <summary>
     /// Loads the bootstrap concrete implementation in GfxCore
     /// </summary>
-    /// <param name="testMode"></param>
+    /// <param name="testMode">If TRUE, the bootstrap will only resolve dependencies and not initialize the extensions.</param>
+    /// <param name="onLoaded">The action to execute when the bootstrap is initialized.</param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     internal static GfxBootstrap Load(bool testMode, Action<BootstrapInitializedEvent> onInitialized)
@@ -153,4 +141,5 @@ internal abstract class GfxBootstrap
         var location = new Uri(Assembly.GetExecutingAssembly().Location);
         return new FileInfo(location.AbsolutePath).Directory.FullName;
     }
+
 }
