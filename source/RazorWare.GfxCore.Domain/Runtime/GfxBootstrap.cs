@@ -66,6 +66,10 @@ internal abstract class GfxBootstrap
     private static void OnBootstrapInitialize(GfxBootstrap bootstrap)
     {
         //  these registries are required for basic functionality
+        if (!bootstrap._registries.CanResolve<IAssemblyRegistry>())
+        {
+            throw new InvalidOperationException("Assembly registry not found");
+        }
         if (!bootstrap._registries.CanResolve<IEventSourceRegistry>())
         {
             throw new InvalidOperationException("EventSource registry not found");
@@ -78,6 +82,10 @@ internal abstract class GfxBootstrap
         {
             throw new InvalidOperationException("Extension registry not found");
         }
+
+        //  register assembly dependencies
+        var assemblies = bootstrap._registries.Resolve<IAssemblyRegistry>();
+        assemblies.Register(Assembly.GetExecutingAssembly());
 
         bootstrap.OnInitialize(bootstrap._registries);
     }

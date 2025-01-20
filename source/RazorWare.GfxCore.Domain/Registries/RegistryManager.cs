@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using RazorWare.GfxCore.Extensibility;
 
 namespace RazorWare.GfxCore.Registries;
@@ -13,6 +14,7 @@ public class RegistryManager : GfxRegistry<IRegistry>
     /// </summary>
     public RegistryManager() : base("Registries")
     {
+        Register<IAssemblyRegistry>(typeof(Assembly), new AssemblyRegistry());
         Register<IEventSourceRegistry>(typeof(IGfxEventSource), new EventSourceRegistry());
         Register<ICommandTargetRegistry>(typeof(IGfxCommandTarget), new CommandTargetRegistry());
         Register<IExtensionRegistry>(typeof(IGfxExtension), new ExtensionRegistry());

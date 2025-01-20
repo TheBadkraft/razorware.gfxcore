@@ -69,6 +69,23 @@ public abstract class GfxRegistry<TRegItem> : IRegistry<TRegItem>
 
         return false;
     }
+    /// <summary>
+    /// Try to resolve registry item by identifier
+    /// </summary>
+    /// <param name="identifier">The registry item identifier</param>
+    /// <param name="registry">The registry</param>
+    /// <returns>TRUE if the registry is found, FALSE otherwise</returns>
+    public virtual bool TryResolve(string identifier, out TRegItem registry)
+    {
+        registry = default;
+
+        if (TryResolveKey(identifier, null, out var key))
+        {
+            return _registry.TryGetValue(key, out registry);
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// Get the registry enumerator
@@ -93,13 +110,32 @@ public abstract class GfxRegistry<TRegItem> : IRegistry<TRegItem>
     /// <summary>
     /// Try to resolve a registry key
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <param name="type">The registry type</param>
+    /// <param name="key">The registry key</param>
+    /// <returns>TRUE if the key is found, FALSE otherwise</returns>
     protected bool TryResolveKey(Type type, out RegistryKey key)
     {
         key = _registry.Keys
             .Where(k => k.ObjectType == type || k.InterfaceType == type)
+            .FirstOrDefault();
+
+        return key != null;
+    }
+    /// <summary>
+    /// Try to resolve a registry key
+    /// </summary>
+    /// <param name="identifier">The registry item identifier</param>
+    /// <param name="tags">The registry item tags</param>
+    /// <param name="key">The registry key</param>
+    /// <returns>TRUE if the key is found, FALSE otherwise</returns>
+    protected bool TryResolveKey(string identifier, string[] tags, out RegistryKey key)
+    {
+        tags = tags ?? Array.Empty<string>();
+        var tagList = tags.ToList();
+
+        key = _registry.Keys
+            .Where(k => (string.IsNullOrEmpty(identifier) || k.Identifier == identifier)
+                     && (tagList.Count == 0 || tagList.All(tag => k.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase))))
             .FirstOrDefault();
 
         return key != null;
