@@ -25,6 +25,13 @@ public interface IRegistry<TRegType> : IEnumerable<TRegType>, IRegistry
     /// <param name="registry">The registry</param>
     /// <returns>TRUE if the registry is found, FALSE otherwise</returns>
     bool TryResolve(Type type, out TRegType registry);
+    /// <summary>
+    /// Try to resolve registry item by identifier
+    /// </summary>
+    /// <param name="identifier">The registry identifier</param>
+    /// <param name="registry">The registry</param>
+    /// <returns>TRUE if the registry is found, FALSE otherwise</returns>
+    bool TryResolve(string identifier, out TRegType registry);
 }
 
 /// <summary>

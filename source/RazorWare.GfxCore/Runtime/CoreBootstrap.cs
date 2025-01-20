@@ -53,6 +53,9 @@ internal sealed class CoreBootstrap : GfxBootstrap
         var commands = Registries.Resolve<ICommandTargetRegistry>();
         Events = commands.Register<IEventPipeline>(typeof(IGfxCommandTarget), EventPipeline.Instance);
         Events.Subscribe<LogEvent>(e => Logger.Log(e.Message));
+
+        var assemblies = Registries.Resolve<IAssemblyRegistry>();
+        assemblies.RegisterDependencies(GetType().Assembly);
     }
     /// <summary>
     /// <inheritdoc/>
