@@ -13,6 +13,41 @@
       "preLaunchTask": "build dev app"
     },
     {
+      "name": "packager update config",
+      "type": "coreclr",
+      "request": "launch",
+      "console": "externalTerminal",
+      "program": "${workspaceFolder}/RazorWare.GfxExtension.Packager/bin/Debug/net9.0/gfxpackage",
+      "args": [
+        "-c",
+        "./../../../gfxconfig.json"
+      ],
+      "preLaunchTask": "build packager"
+    },
+    {
+      "name": "packager gen manifest",
+      "type": "coreclr",
+      "request": "launch",
+      "console": "externalTerminal",
+      "program": "${workspaceFolder}/RazorWare.GfxExtension.Packager/bin/Debug/net9.0/gfxpackage",
+      "args": [
+        "-g",
+        // "./../../../"
+      ],
+      "preLaunchTask": "build packager"
+    },
+    {
+      "name": "gfxpackage",
+      "type": "coreclr",
+      "request": "launch",
+      "console": "externalTerminal",
+      "program": "${workspaceFolder}/RazorWare.GfxExtension.Packager/bin/Debug/net9.0/gfxpackage",
+      "args": [
+        "-p",
+      ],
+      "preLaunchTask": "build packager"
+    },
+    {
       "name": "run tests",
       "type": "coreclr",
       "request": "launch",

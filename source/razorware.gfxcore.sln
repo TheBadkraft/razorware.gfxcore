@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.testing", "testing\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfxcore.resources.bar", "dev\GfxCore.Resources.Bar\gfxcore.resources.bar.csproj", "{E6855B33-FA89-4B89-A529-855E35C45838}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "razorware.gfxextension.packager", "RazorWare.GfxExtension.Packager\razorware.gfxextension.packager.csproj", "{3D2DD5F8-BA4A-421F-A056-8AF7892D54CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{E6855B33-FA89-4B89-A529-855E35C45838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6855B33-FA89-4B89-A529-855E35C45838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6855B33-FA89-4B89-A529-855E35C45838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2DD5F8-BA4A-421F-A056-8AF7892D54CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2DD5F8-BA4A-421F-A056-8AF7892D54CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2DD5F8-BA4A-421F-A056-8AF7892D54CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2DD5F8-BA4A-421F-A056-8AF7892D54CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
