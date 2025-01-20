@@ -31,9 +31,8 @@ public abstract partial class GfxApplication : IRuntime
         {
             throw new InvalidOperationException("The GfxCore bootstrap failed to load.");
         }
-        _bootstrap.Initialize();
 
-        //  TODO: bootstrap status check
+        _bootstrap.LoadExtensions();
 
         if (!testMode)
         {

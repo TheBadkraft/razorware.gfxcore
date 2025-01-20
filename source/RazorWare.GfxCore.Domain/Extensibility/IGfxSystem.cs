@@ -2,12 +2,12 @@
 namespace RazorWare.GfxCore.Extensibility;
 
 /// <summary>
-/// The base interface for a GfxService.
+/// The base interface for a GfxSystem.
 /// </summary>
-public interface IGfxService
+public interface IGfxSystem
 {
     /// <summary>
-    /// Get the service name.
+    /// Get the system name.
     /// </summary>
     string Name { get; }
 }

@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using RazorWare.GfxCore.Extensibility;
 using RazorWare.GfxCore.Extensibility.Logging;
 using RazorWare.GfxCore.Facade;
 using RazorWare.GfxCore.Registries;

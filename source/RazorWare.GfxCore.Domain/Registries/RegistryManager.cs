@@ -15,6 +15,7 @@ public class RegistryManager : GfxRegistry<IRegistry>
     {
         Register<IEventSourceRegistry>(typeof(IGfxEventSource), new EventSourceRegistry());
         Register<ICommandTargetRegistry>(typeof(IGfxCommandTarget), new CommandTargetRegistry());
+        Register<IExtensionRegistry>(typeof(IGfxExtension), new ExtensionRegistry());
     }
 
     /// <summary>

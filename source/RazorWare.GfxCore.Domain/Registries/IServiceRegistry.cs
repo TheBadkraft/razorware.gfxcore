@@ -25,23 +25,3 @@ public interface IServiceRegistry : IRegistry<IGfxService>
     /// <returns>The service</returns>
     T Resolve<T>(string identifier = null, params string[] tags) where T : class;
 }
-
-/// <summary>
-/// System registry interface
-/// </summary>
-public interface ISystemRegistry : IRegistry<IGfxSystem> { }
-
-/// <summary>
-/// Resource registry interface
-/// </summary>
-public interface IResourceRegistry : IRegistry<IGfxResource> { }
-
-/// <summary>
-/// Event source registry interface
-/// </summary>
-public interface IEventSourceRegistry : IRegistry<IGfxEventSource> { }
-
-/// <summary>
-/// Command target registry interface
-/// </summary>
-public interface ICommandTargetRegistry : IRegistry<IGfxCommandTarget> { }
