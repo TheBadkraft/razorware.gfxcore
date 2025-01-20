@@ -3,6 +3,7 @@ using System.Reflection;
 using RazorWare.GfxCore.Events;
 using RazorWare.GfxCore.Extensibility;
 using RazorWare.GfxCore.Registries;
+using RazorWare.GfxCore.Utilities;
 
 namespace RazorWare.GfxCore.Runtime;
 
@@ -99,7 +100,7 @@ internal abstract class GfxBootstrap
     internal static GfxBootstrap Load(bool testMode, Action<BootstrapInitializedEvent> onInitialized)
     {
         //  load the assembly
-        var loadPath = Path.Combine(GetExecutingDirectory(), GFX_CORE_DLL);
+        var loadPath = Path.Combine(Utils.GetExecutingDirectory(), GFX_CORE_DLL);
         var assembly = Assembly.LoadFrom(loadPath);
         var type = default(Type);
 
@@ -134,12 +135,4 @@ internal abstract class GfxBootstrap
 
         return bootstrap;
     }
-
-    //  get the executing directory
-    private static string GetExecutingDirectory()
-    {
-        var location = new Uri(Assembly.GetExecutingAssembly().Location);
-        return new FileInfo(location.AbsolutePath).Directory.FullName;
-    }
-
 }

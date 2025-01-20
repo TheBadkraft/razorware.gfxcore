@@ -44,6 +44,20 @@
 			}
 		},
 		{
+			"label": "build packager",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/RazorWare.GfxExtension.Packager/razorware.gfxextension.packager.csproj"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
 			"label": "build ext",
 			"type": "shell",
 			"command": "/bin/bash",

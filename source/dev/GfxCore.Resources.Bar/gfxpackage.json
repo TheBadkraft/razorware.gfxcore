@@ -1,0 +1,8 @@
+{
+  "name": "resource pack",
+  "version": "1.0.0",
+  "description": "test resource package",
+  "author": "razorware",
+  "assembly": "gfxcore.resources.bar",
+  "checksum": ""
+}
