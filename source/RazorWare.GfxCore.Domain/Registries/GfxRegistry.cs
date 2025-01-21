@@ -106,7 +106,13 @@ public abstract class GfxRegistry<TRegItem> : IRegistry<TRegItem>
     {
         return GetEnumerator();
     }
-
+    /// <summary>
+    /// Clear the registry
+    /// </summary>
+    public void Clear()
+    {
+        _registry.Clear();
+    }
     /// <summary>
     /// Try to resolve a registry key
     /// </summary>

@@ -40,12 +40,17 @@ public class Manifest
     /// Get the package dependencies.
     /// </summary>
     [JsonPropertyName("dependencies")]
-    public List<string> dependencies { get; set; }
+    public List<string> Dependencies { get; set; } = new();
     /// <summary>
     /// Get the package assembly checksum.
     /// </summary>
     [JsonPropertyName("checksum")]
     public string Checksum { get; set; }
+    /// <summary>
+    /// Get the package packed timestamp.
+    /// </summary>
+    [JsonPropertyName("packed")]
+    public DateTime Packed { get; set; }
 
     /// <summary>
     /// Load the manifest from the specified configuration.
@@ -74,11 +79,18 @@ public class Manifest
     public override string ToString()
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"{"",5}{"Name",10}: {Name}");
-        sb.AppendLine($"{"",5}{"Version",10}: {Version}");
-        sb.AppendLine($"{"",5}{"Description",10}: {Description}");
-        sb.AppendLine($"{"",5}{"Author",10}: {Author}");
-        sb.AppendLine($"{"",5}{"Checksum",10}: {Checksum}");
+        sb.AppendLine($"{"",5}{"Name",-12}: {Name}");
+        sb.AppendLine($"{"",5}{"Packed",-12}: {Packed}");
+        sb.AppendLine($"{"",5}{"Version",-12}: {Version}");
+        sb.AppendLine($"{"",5}{"Description",-12}: {Description}");
+        sb.AppendLine($"{"",5}{"Author",-12}: {Author}");
+        sb.AppendLine($"{"",5}{"Assembly",-12}: {Assembly}");
+        sb.AppendLine($"{"",5}{"Dependencies",-12}:");
+        foreach (var dep in Dependencies)
+        {
+            sb.AppendLine($"{"",9}{dep}");
+        }
+        sb.AppendLine($"{"",5}{"Checksum",-12}: {Checksum}");
 
         return sb.ToString();
     }

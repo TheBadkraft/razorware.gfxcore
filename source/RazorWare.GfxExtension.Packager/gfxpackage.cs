@@ -19,6 +19,7 @@ switch (args[0])
         Config.Load(path, out config);
         Console.WriteLine($"{config.Source} ...");
         Manifest.Load(config, out manifest);
+        Packager.Pack(config, manifest);
 
         Console.WriteLine($"{manifest}");
 
