@@ -14,6 +14,11 @@ public class Config
     [JsonPropertyName("source")]
     public string Source { get; set; } = "./";
     /// <summary>
+    /// The destination directory to pack files to.
+    /// </summary>
+    [JsonPropertyName("destination")]
+    public string Destination { get; set; } = "./";
+    /// <summary>
     /// Determine whether to log manifest information.
     /// </summary>
     /// <remarks>

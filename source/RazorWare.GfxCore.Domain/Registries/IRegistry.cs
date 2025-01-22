@@ -47,4 +47,9 @@ public interface IRegistry
     /// The registry type
     /// </summary>
     Type Type { get; }
+
+    /// <summary>
+    /// Clear the registry
+    /// </summary>
+    void Clear();
 }

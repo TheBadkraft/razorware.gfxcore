@@ -4,5 +4,10 @@
   "description": "test resource package",
   "author": "razorware",
   "assembly": "gfxcore.resources.bar",
-  "checksum": ""
+  "entry_class": "GfxResource",
+  "dependencies": [],
+  "checksum": "",
+  "packed": "0001-01-01T00:00:00",
+  "identifier": "my_extension",
+  "tags": []
 }

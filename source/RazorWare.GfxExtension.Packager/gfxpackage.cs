@@ -18,7 +18,8 @@ switch (args[0])
         _ = EXECUTING_DIR.ResolvePathArgs(out path, out file);
         Config.Load(path, out config);
         Console.WriteLine($"{config.Source} ...");
-        Manifest.Load(config, out manifest);
+        Packager.LoadManifest(config, out manifest);
+        Packager.Pack(config, manifest);
 
         Console.WriteLine($"{manifest}");
 
