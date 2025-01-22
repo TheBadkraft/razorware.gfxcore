@@ -1,6 +1,7 @@
 
+using System.IO.Compression;
 using System.Reflection;
-
+using System.Text.Json;
 using RazorWare.GfxCore.Events;
 using RazorWare.GfxCore.Registries;
 
@@ -13,7 +14,7 @@ public class ExtensionLoader
     private static string ext_path;
 
     //  the list of extensions
-    private static readonly List<GfxExtensionInfo> _extensions = new();
+    private static readonly List<PackageManifest> _extPackages = new();
 
     private RegistryManager Registries { get; init; }
 
@@ -30,6 +31,41 @@ public class ExtensionLoader
         Registries = registries;
         var registry = Registries.Resolve<ICommandTargetRegistry>();
         Events = registry.Resolve<IEventPipeline>();
+    }
+
+    /// <summary>
+    /// Open the package and extract the manifest.
+    /// </summary>
+    /// <param name="pkgFile">The package file to open.</param>
+    /// <param name="pkgManifest">The package manifest.</param>
+    /// <returns>TRUE if the package was opened successfully, otherwise FALSE.</returns>
+    public bool OpenPackage(FileInfo pkgFile, out PackageManifest pkgManifest)
+    {
+        //  obtain the package file stream
+        using var fs = pkgFile.OpenRead();
+        //  open the package archive
+        using var archive = new ZipArchive(fs, ZipArchiveMode.Read, false);
+        //  find the manifest file ("gfxpackage.json")
+        var manifest_entry = archive.GetEntry(Manifest.PACKAGE_JSON);
+        if (manifest_entry == null)
+        {
+            Log($"{"",13}Invalid Package :: Manifest Not Found");
+            pkgManifest = null;
+            return false;
+        }
+        //  deserialize the manifest file
+        Manifest manifest = JsonSerializer.Deserialize<Manifest>(manifest_entry.Open());
+        if (manifest == null)
+        {
+            Log($"{"",13}Invalid Package :: Manifest Invalid");
+            pkgManifest = null;
+            return false;
+        }
+        //  create the package manifest
+        //  exclude the manifest file from the entries
+        pkgManifest = new PackageManifest(manifest, archive.Entries.Where(e => e != manifest_entry));
+
+        return true;
     }
 
     //  load the extensions - if testMode, only resolve dependencies,
@@ -50,91 +86,45 @@ public class ExtensionLoader
 
         EnumerateExtensions();
         //  if no extensions found, we are done
-        if (!_extensions.Any())
+        if (!_extPackages.Any())
         {
             Log($"{"",5}{"No Extensions Found",-25}");
-            return;
+            goto DiscoverComplete;
         }
 
-        // LoadExtensions();
+    // LoadExtensions();
 
+    DiscoverComplete:
         Log($"[GfxCore :: Bootstrap] Extension Discovery Complete");
     }
 
     //  iterate through the extension path:
-    //   - each extension is a directory
-    //   - each extension directory contains an assembly (dll)
-    //   - at least one assembly in the directory contains a class 
-    //     decorated with the GfxExtensionAttribute
+    //   - the zip packages are the extensions
+    //   - each package contains:
+    //      - a manifest file (gfxpackage.json)
+    //      - the actual extension assembly (dll)
+    //      - any other resources required by the extension (e.g. images, assemblies, etc.)
     private void EnumerateExtensions()
     {
-        foreach (var dir in Directory.GetDirectories(ext_path))
+        Log($"{"",5}{"Enumerating Extensions:",-25}");
+        //  not expecting directories ... just "*.zip" files
+        foreach (var pkg in ExtensionPath.GetFiles("*.zip"))
         {
-            //  does the path contain an assembly (dll)?
-            if (!Directory.GetFiles(dir, "*.dll").Any())
+            Log($"{"",9}{"Found Package:",-25} {pkg.Name}");
+            //  extract the package
+            if (OpenPackage(pkg, out PackageManifest pkgManifest))
             {
-                continue;
-            }
-            //  find the assembly with a class decorated with the GfxExtensionAttribute
-            var info = new GfxExtensionInfo
-            {
-                ExtensionPath = new(dir)
-            };
-            if (!LocateExtensionAssembly(info))
-            {
-                continue;
-            }
+                //  add the package to the list of extensions
+                _extPackages.Add(pkgManifest);
+                //  validate manifest file
 
-            _extensions.Add(info);
-            Log($"{"",5}{"Extension Found:",-25} {info}");
+            }
+            //  check dependencies (if any)
+            //  load the assembly
+            //  ... and ...
+            //  register assemblies (AssemblyRegistry)
+            //  register extensions (ExtensionRegistry)
         }
-    }
-    //  locate the extension assembly; one per directory
-    //  let's go ahead and materialize the attribute
-    private bool LocateExtensionAssembly(GfxExtensionInfo info)
-    {
-        /*
-            All we are doing is finding the first assembly in the directory 
-            that has a class decorated with the GfxExtensionAttribute. If 
-            there is more than one assembly in the directory, we will only 
-            load the first one found.
-
-            This is a simple implementation and lacks the robustness of 
-            a full extension system. This is a good starting point.
-        */
-        var files = info.ExtensionPath.GetFiles("*.dll");
-
-        foreach (var file in files)
-        {
-            try
-            {
-                var assembly = Assembly.LoadFrom(file.FullName);
-                var types = assembly.GetTypes();
-                foreach (var type in types)
-                {
-                    if ((info.Metadata = type.GetCustomAttribute<GfxExtensionAttribute>()) != null)
-                    {
-                        info.Assembly = assembly;
-                        info.ExtType = type;
-
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log($"{"",5}{"Error Loading Assembly:",-25} {file}");
-                Log($"{"",10}{ex.Message}");
-            }
-
-            //  if info.Assembly != null, we found the assembly
-            if (info.Assembly != null)
-            {
-                break;
-            }
-        }
-
-        return info.Assembly != null;
     }
 
     private void Log(string message)

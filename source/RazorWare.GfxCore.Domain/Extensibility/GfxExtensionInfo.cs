@@ -1,4 +1,3 @@
-
 using System.Reflection;
 
 namespace RazorWare.GfxCore.Extensibility;
@@ -13,13 +12,9 @@ public class GfxExtensionInfo
     /// </summary>
     public Guid Id { get; init; } = Guid.NewGuid();
     /// <summary>
-    /// The extension directory.
-    /// </summary>
-    public DirectoryInfo ExtensionPath { get; init; }
-    /// <summary>
     /// The extension assembly.
     /// </summary>
-    public Assembly Assembly { get; internal set; } = null;
+    public AssemblyName Assembly { get; internal set; } = null;
     /// <summary>
     /// The extension type found decorate with the <see cref="GfxExtensionAttribute"/>.
     /// </summary>
@@ -58,7 +53,7 @@ public class GfxExtensionInfo
     /// <returns>The string representation of the extension info.</returns>
     public override string ToString()
     {
-        return $"{ExtensionPath.Name}.{ExtType.Name}";
+        return $"{Assembly.Name} ({Assembly.Version})";
     }
     #endregion overrides
 }

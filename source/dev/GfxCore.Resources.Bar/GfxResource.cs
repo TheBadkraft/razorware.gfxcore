@@ -7,7 +7,16 @@ namespace GfxCore.Systems.Foo;
 [GfxExtension(typeof(GfxResource))]
 public class GfxResource : IGfxExtension
 {
-    //  this class is our resource entry point
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public string Name => "GfxResource";
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public Version Version => new(1, 0, 0);
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public List<GfxExtensionInfo> Requires { get; }
 }

@@ -1,7 +1,13 @@
 {
-  "name": null,
-  "version": null,
-  "description": null,
-  "author": null,
-  "checksum": null
+  "name": "GfxExtension Name",
+  "version": "1.0.0",
+  "description": "A description for your extension",
+  "author": "Your name or organization",
+  "assembly": "AssemblyName",
+  "entry_class": "DecoratedClassName",
+  "dependencies": [],
+  "checksum": "",
+  "packed": "1776-07-04T00:00:00",
+  "identifier": "my_extension",
+  "tags": []
 }

@@ -12,30 +12,43 @@ namespace RazorWare.GfxCore.Extensibility;
 public class Manifest
 {
     /// <summary>
+    /// The default package manifest file name.
+    /// </summary>
+    public const string PACKAGE_JSON = "gfxpackage.json";
+
+    /// <summary>
     /// Get the package name.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = "GfxExtension Name";
     /// <summary>
     /// Get the package version.
     /// </summary>
     [JsonPropertyName("version")]
-    public string Version { get; set; }
+    public string Version { get; set; } = "1.0.0";
     /// <summary>
     /// Get the package description.
     /// </summary>
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string Description { get; set; } = "A description for your extension";
     /// <summary>
     /// Get the package author.
     /// </summary>
     [JsonPropertyName("author")]
-    public string Author { get; set; }
+    public string Author { get; set; } = "Your name or organization";
     /// <summary>
     /// Get the package assembly.
     /// </summary>
     [JsonPropertyName("assembly")]
-    public string Assembly { get; set; }
+    public string Assembly { get; set; } = "AssemblyName";
+    /// <summary>
+    /// Get decorated the entry class name.
+    /// </summary>
+    /// <remarks>
+    /// This class is decorated with the GfxExtension attribute.
+    /// </remarks>
+    [JsonPropertyName("entry_class")]
+    public string EntryClass { get; set; } = "DecoratedClassName";
     /// <summary>
     /// Get the package dependencies.
     /// </summary>
@@ -44,33 +57,35 @@ public class Manifest
     /// <summary>
     /// Get the package assembly checksum.
     /// </summary>
+    /// <remarks>
+    /// Auto-generated
+    /// </remarks>
     [JsonPropertyName("checksum")]
-    public string Checksum { get; set; }
+    public string Checksum { get; set; } = "";
     /// <summary>
     /// Get the package packed timestamp.
     /// </summary>
+    /// <remarks>
+    /// Auto-generated when pakcing the extension.
+    /// </remarks>
     [JsonPropertyName("packed")]
-    public DateTime Packed { get; set; }
-
+    public DateTime Packed { get; set; } = new DateTime(1776, 7, 4);
     /// <summary>
-    /// Load the manifest from the specified configuration.
+    /// The package identifier.
     /// </summary>
-    /// <param name="config">The configuration to load the manifest from.</param>
-    /// <param name="manifest">The manifest to load.</param>
-    public static void Load(Config config, out Manifest manifest)
-    {
-        //  does the config ext path exist?
-        if (!$"{config.Source}/{Packager.PACKAGE_JSON}".ResolvePathArgs(out string path, out string file))
-        {
-            throw new DirectoryNotFoundException($"Extension path not found: {config.Source}");
-        }
-
-        //  load the json file from the path
-        file = Path.Combine(path, file);
-        string json = File.ReadAllText(file);
-        //  materialize the manifest
-        manifest = JsonSerializer.Deserialize<Manifest>(json);
-    }
+    /// <remarks>
+    /// Optional; used as a means to uniquely identify your extension.
+    /// </remarks>
+    [JsonPropertyName("identifier")]
+    public string Identifier { get; set; } = "my_extension";
+    /// <summary>
+    /// Package tags.
+    /// </summary>
+    /// <remarks>
+    /// Optional; used to categorize your extension.
+    /// </remarks>
+    [JsonPropertyName("tags")]
+    public List<string> Tags { get; set; } = new();
 
     /// <summary>
     /// Get the string representation of the manifest information.
