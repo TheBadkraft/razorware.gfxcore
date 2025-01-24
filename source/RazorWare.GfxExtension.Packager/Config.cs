@@ -24,7 +24,7 @@ public class Config
     /// <remarks>
     /// Log output to the console unless a log file is provided.
     /// </remarks>
-    [JsonPropertyName("log_mainifest")]
+    [JsonPropertyName("log_manifest")]
     public bool LogManifest { get; set; } = true;
     /// <summary>
     /// [Optional] The log file to write log output to.
@@ -36,6 +36,11 @@ public class Config
     /// </summary>
     [JsonPropertyName("autodetect_dependencies")]
     public bool AutodetectDependencies { get; set; } = false;
+    /// <summary>
+    /// Determine whether to use the project file for manifest details
+    /// </summary>
+    [JsonPropertyName("use_project_file")]
+    public bool UseProjectFile { get; set; } = true;
 
     /// <summary>
     /// Load the configuration from the specified path.

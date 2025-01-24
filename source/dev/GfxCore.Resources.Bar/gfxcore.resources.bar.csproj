@@ -6,6 +6,15 @@
     <Nullable>disable</Nullable>
     <RootNamespace>GfxCore.Resources.Bar</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <AssemblyName>gfx.resources.bar</AssemblyName>
+    <AssemblyInformationalVersion>1.0.0</AssemblyInformationalVersion>
+    <AssemblyTitle>Gfx Resource Pack</AssemblyTitle>
+    <AssemblyDescription>A test resource extension mod</AssemblyDescription>
+    <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+    <AssemblyCopyright>Copyright 2025 RazorWare</AssemblyCopyright>
+    <AssemblyAuthors>RazorWare</AssemblyAuthors>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 
 using RazorWare.GfxCore.Extensibility;
+using RazorWare.GfxCore.Logging;
 using RazorWare.GfxCore.Utilities;
 
 const string EXECUTING_DIR = "./";
@@ -10,6 +11,23 @@ string path, file;
 Config config = null;
 Manifest manifest = null;
 
+/*  1/22/2025
+    Adding several features/enhancements
+    - gfxconfig.json:
+    [X] - set log_manifest true && log_file with a file name, the 
+          packer will output all logging to that file
+    [X] - set log_manifest true and no log_file, logging goes to 
+          the console
+    [ ] - read_csproj setting to read the .csproj file for assembly 
+          version, etc.
+    - gfxpackage.json:
+    [ ] - adding AssemblyInfo class for extension class and 
+          dependencies
+    [ ] - AssemblyInfo will contain a string AssemblyName as well 
+          as the package entry name
+    ---------------------------------------------------------------
+*/
+
 switch (args[0])
 {
     case "-p":
@@ -17,11 +35,29 @@ switch (args[0])
         //  TODO: singc ResolvePathArgs return whether the directory path exists, implement check
         _ = EXECUTING_DIR.ResolvePathArgs(out path, out file);
         Config.Load(path, out config);
-        Console.WriteLine($"{config.Source} ...");
-        Packager.LoadManifest(config, out manifest);
-        Packager.Pack(config, manifest);
+        //  if log_manifest is true and log_file is set, log to file
+        if (config.LogManifest && !string.IsNullOrEmpty(config.LogFile))
+        {
+            Packager.Logger = new FileLogger(config.LogFile);
+        }
+        Packager.Config = config;
+        Packager.Log($"{config.Source} ...");
+        Packager.LoadManifest(out manifest);
+        Console.Write($"{manifest.Name} v{manifest.Version} ");
 
-        Console.WriteLine($"{manifest}");
+        var isPacked = Packager.Pack(manifest);
+
+        if (isPacked)
+        {
+            Packager.Log("Packed successfully.");
+            Packager.Log($"Manifest:\n{manifest}");
+        }
+        else
+        {
+            Packager.Log("Packing failed.");
+        }
+
+        Console.WriteLine($"\t[{(isPacked ? "SUCCESS" : "FAILURE")}]");
 
         break;
     case "-u":
@@ -31,7 +67,7 @@ switch (args[0])
     case "-g":  //  generate empty manifest
         //  TODO: singc ResolvePathArgs return whether the directory path exists, implement check
         _ = args.Length > 1 ? args[1].ResolvePathArgs(out path, out file) : string.Empty.ResolvePathArgs(out path, out file);
-        Console.WriteLine($"Generating empty manifest: {Path.Combine(path, Packager.PACKAGE_JSON)} ...");
+        Console.WriteLine($"Generating empty manifest: {Path.Combine(path, Manifest.PACKAGE_JSON)} ...");
 
         Packager.GenerateEmptyManifest(path);
 

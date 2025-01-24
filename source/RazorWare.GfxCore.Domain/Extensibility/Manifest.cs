@@ -37,7 +37,7 @@ public class Manifest
     [JsonPropertyName("author")]
     public string Author { get; set; } = "Your name or organization";
     /// <summary>
-    /// Get the package assembly.
+    /// Get the package assembly name.
     /// </summary>
     [JsonPropertyName("assembly")]
     public string Assembly { get; set; } = "AssemblyName";

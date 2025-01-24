@@ -1,7 +1,8 @@
 {
-  "source": "./",
-  "destination": "./",
+  "source": "dev/GfxCore.Resources.Bar/bin/Debug/net9.0",
+  "destination": "mods",
   "log_mainifest": true,
-  "log_file": "",
-  "autodetect_dependencies": false
+  "log_file": "gfx_pack.log",
+  "autodetect_dependencies": true,
+  "use_project_file": true
 }

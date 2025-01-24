@@ -1,5 +1,5 @@
 {
-  "name": "resource pack",
+  "name": "resource_pack",
   "version": "1.0.0",
   "description": "test resource package",
   "author": "razorware",
@@ -7,7 +7,10 @@
   "entry_class": "GfxResource",
   "dependencies": [],
   "checksum": "",
-  "packed": "0001-01-01T00:00:00",
-  "identifier": "my_extension",
-  "tags": []
+  "packed": "1776-07-04T00:00:00",
+  "identifier": "gfx_resource_pack",
+  "tags": [
+    "test",
+    "demo"
+  ]
 }
