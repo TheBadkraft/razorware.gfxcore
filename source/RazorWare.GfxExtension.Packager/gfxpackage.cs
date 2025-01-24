@@ -18,7 +18,7 @@ Manifest manifest = null;
           packer will output all logging to that file
     [X] - set log_manifest true and no log_file, logging goes to 
           the console
-    [ ] - read_csproj setting to read the .csproj file for assembly 
+    [X] - read_csproj setting to read the .csproj file for assembly 
           version, etc.
     - gfxpackage.json:
     [ ] - adding AssemblyInfo class for extension class and 
@@ -42,6 +42,9 @@ switch (args[0])
         }
         Packager.Config = config;
         Packager.Log($"{config.Source} ...");
+        //  we still expect a manifest even if we read the .csproj file ... 
+        //  because there some properties in the manifest that are not in 
+        //  the .csproj file
         Packager.LoadManifest(out manifest);
         Console.Write($"{manifest.Name} v{manifest.Version} ");
 

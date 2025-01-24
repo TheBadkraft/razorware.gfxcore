@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Text.Json;
 
 using RazorWare.GfxCore.Extensibility.Logging;
-using RazorWare.GfxCore.Logging;
 using RazorWare.GfxCore.Registries;
 using RazorWare.GfxCore.Utilities;
 
@@ -126,6 +125,16 @@ public static class Packager
         string json = File.ReadAllText(file);
         //  materialize the manifest
         manifest = JsonSerializer.Deserialize<Manifest>(json);
+
+        //  are we reading the .csproj file?
+        if (Config.ReadProject)
+        {
+            var projDir = Path.GetFullPath(Path.Combine(path, "../../../"));
+            if (!Project.Load(projDir, manifest))
+            {
+                Log("Could not load project file.");
+            }
+        }
     }
 
     internal static void Log(string logMessage)

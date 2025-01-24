@@ -39,8 +39,8 @@ public class Config
     /// <summary>
     /// Determine whether to use the project file for manifest details
     /// </summary>
-    [JsonPropertyName("use_project_file")]
-    public bool UseProjectFile { get; set; } = true;
+    [JsonPropertyName("read_project")]
+    public bool ReadProject { get; set; } = true;
 
     /// <summary>
     /// Load the configuration from the specified path.
