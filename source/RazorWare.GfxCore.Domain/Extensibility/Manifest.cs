@@ -50,7 +50,7 @@ public class Manifest
     /// Get the package assembly name.
     /// </summary>
     [JsonPropertyName("assembly")]
-    public string Assembly { get; set; } = "AssemblyName";
+    public AssemblyInfo Assembly { get; set; } = new();
     /// <summary>
     /// Get decorated the entry class name.
     /// </summary>
@@ -63,7 +63,7 @@ public class Manifest
     /// Get the package dependencies.
     /// </summary>
     [JsonPropertyName("dependencies")]
-    public List<string> Dependencies { get; set; } = new();
+    public List<AssemblyInfo> Dependencies { get; set; } = new();
     /// <summary>
     /// Get the package assembly checksum.
     /// </summary>

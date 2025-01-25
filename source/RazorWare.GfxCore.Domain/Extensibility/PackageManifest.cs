@@ -41,7 +41,7 @@ public class PackageManifest
     {
         var extAssembly = _manifest.Assembly;
         //  validate dependency assemblies first
-        foreach (var entry in _entries.Where(a => a.FullName != extAssembly && a.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
+        foreach (var entry in _entries.Where(a => a.FullName != extAssembly.Name.FullName && a.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
         {
             //  get the assembly name only because that is what the AssemblyRegistry uses
             // Assuming you have a stream that contains the assembly data

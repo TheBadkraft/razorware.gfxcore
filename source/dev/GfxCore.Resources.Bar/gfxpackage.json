@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "test resource package",
   "author": "razorware",
-  "assembly": "gfxcore.resources.bar",
+  "assembly": {
+  	"assembly_name": "gfx.resources.bar, Version=1.0.0, Culture=neutral, PublicKeyToken=null",
+    "entry_tag": "gfx.resources.bar",
+    "file_name": "gfx.resources.bar.dll"
+  },
   "entry_class": "GfxResource",
   "dependencies": [],
   "checksum": "",

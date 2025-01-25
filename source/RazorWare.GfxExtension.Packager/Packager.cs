@@ -56,7 +56,7 @@ public static class Packager
     internal static bool Pack(Manifest manifest)
     {
         //  load assembly
-        if (!Path.Combine(Config.Source, $"{manifest.Assembly}.dll").ResolvePathArgs(out string sourcePath, out string file))
+        if (!Path.Combine(Config.Source, $"{manifest.Assembly.FileName}").ResolvePathArgs(out string sourcePath, out string file))
         {
             throw new FileNotFoundException($"Assembly not found: {manifest.Assembly}.dll");
         }
@@ -64,8 +64,8 @@ public static class Packager
 
         if (Config.AutodetectDependencies)
         {
-            assemblies.RegisterDependencies(assembly);
-            manifest.Dependencies.AddRange(assemblies.Select(asm => asm.Name).ToList());
+            assemblies.RegisterDependencies(assembly, out var deps);
+            manifest.Dependencies.AddRange(deps.Select(d => new AssemblyInfo { Name = d, EntryTag = d.Name, FileName = Path.GetFileName(Assembly.Load(d).Location) }));
             assemblies.Clear();
         }
 
@@ -81,14 +81,13 @@ public static class Packager
                     //  add each dependency assembly
                     foreach (var dep in manifest.Dependencies)
                     {
-                        var asmDependency = dep.EndsWith(".dll") ? dep : $"{dep}.dll";
+                        var asmDependency = dep.FileName;
                         var assemblySource = Path.Combine(sourcePath, asmDependency);
-                        archive.CreateEntryFromFile(assemblySource, asmDependency);
+                        archive.CreateEntryFromFile(assemblySource, dep.EntryTag);
                     }
                     //  add the extension assembly
-                    var asmExtension = $"{manifest.Assembly}.dll";
-                    var extensionSource = Path.Combine(sourcePath, asmExtension);
-                    archive.CreateEntryFromFile(extensionSource, asmExtension);
+                    var extensionSource = Path.Combine(sourcePath, manifest.Assembly.FileName);
+                    archive.CreateEntryFromFile(extensionSource, manifest.Assembly.EntryTag);
                     //  add the packed manifest file
                     var manifestEntry = archive.CreateEntry(Manifest.PACKAGE_JSON);
                     using (StreamWriter writer = new StreamWriter(manifestEntry.Open()))

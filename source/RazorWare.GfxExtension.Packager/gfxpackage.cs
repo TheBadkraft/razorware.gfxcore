@@ -14,16 +14,16 @@ Manifest manifest = null;
 /*  1/22/2025
     Adding several features/enhancements
     - gfxconfig.json:
-    [X] - set log_manifest true && log_file with a file name, the 
+    [Y] - set log_manifest true && log_file with a file name, the 
           packer will output all logging to that file
-    [X] - set log_manifest true and no log_file, logging goes to 
+    [Y] - set log_manifest true and no log_file, logging goes to 
           the console
-    [X] - read_csproj setting to read the .csproj file for assembly 
+    [Y] - read_csproj setting to read the .csproj file for assembly 
           version, etc.
     - gfxpackage.json:
-    [ ] - adding AssemblyInfo class for extension class and 
+    [Y] - adding AssemblyInfo class for extension class and 
           dependencies
-    [ ] - AssemblyInfo will contain a string AssemblyName as well 
+    [Y] - AssemblyInfo will contain a string AssemblyName as well 
           as the package entry name
     ---------------------------------------------------------------
 */

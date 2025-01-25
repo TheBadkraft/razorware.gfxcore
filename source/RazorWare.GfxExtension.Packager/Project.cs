@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using System.Xml;
 
 using RazorWare.GfxCore.Utilities;
@@ -34,7 +35,7 @@ public static class Project
                 "1.2.3" - Simple version.
                 "1.2.3-alpha.1" - Pre-release version.
                 "1.2.3-alpha.1+20230101" - Pre-release version with build metadata.
-                "1.2.3+build.123" - Stable version with build metadata.
+                "1.2.3+build.123" - Stable (release) version with build metadata.
         */
         XmlDocument xmlDoc = new XmlDocument();
         try
@@ -44,7 +45,10 @@ public static class Project
             XmlNode root = xmlDoc.DocumentElement;
             //  get the assembly name
             XmlNode name = root.SelectSingleNode("PropertyGroup/AssemblyName");
-            manifest.Assembly = name.InnerText;
+            XmlNode asmVersion = root.SelectSingleNode("PropertyGroup/AssemblyFileVersion");
+            //  "razorware.gfxcore.domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+            var asmName = $"{name.InnerText}, Version={asmVersion.InnerText}, Culture=neutral, PublicKeyToken=null";
+            manifest.Assembly = new() { Name = new(asmName), EntryTag = name.InnerText, FileName = $"{name.InnerText}.dll" };
             //  get the title
             XmlNode title = root.SelectSingleNode("PropertyGroup/AssemblyTitle");
             manifest.Title = title.InnerText;
