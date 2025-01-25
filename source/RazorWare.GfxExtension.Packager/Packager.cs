@@ -2,8 +2,12 @@
 using System.IO.Compression;
 using System.Reflection;
 using System.Text.Json;
+
+using RazorWare.GfxCore.Extensibility.Logging;
 using RazorWare.GfxCore.Registries;
 using RazorWare.GfxCore.Utilities;
+
+using RazorWare.GfxPacker.Logging;
 
 namespace RazorWare.GfxCore.Extensibility;
 
@@ -15,6 +19,10 @@ public static class Packager
     private static readonly AssemblyRegistry assemblies = new();
 
     internal const string CONFIG_JSON = "gfxconfig.json";
+
+    internal static ILogger Logger { get; set; } = new ConsoleLogger();
+
+    public static Config Config { get; internal set; }
 
     /// <summary>
     /// Generates an empty gfxpackage.json file.
@@ -44,25 +52,26 @@ public static class Packager
     /// Pack the manifest.
     /// </summary>
     /// <param name="manifest">The manifest to pack.</param>
-    internal static void Pack(Config config, Manifest manifest)
+    /// <returns>TRUE if the manifest was packed successfully; otherwise, FALSE.</returns>
+    internal static bool Pack(Manifest manifest)
     {
         //  load assembly
-        if (!Path.Combine(config.Source, $"{manifest.Assembly}.dll").ResolvePathArgs(out string sourcePath, out string file))
+        if (!Path.Combine(Config.Source, $"{manifest.Assembly.FileName}").ResolvePathArgs(out string sourcePath, out string file))
         {
             throw new FileNotFoundException($"Assembly not found: {manifest.Assembly}.dll");
         }
         var assembly = Assembly.LoadFrom(Path.Combine(sourcePath, file));
 
-        if (config.AutodetectDependencies)
+        if (Config.AutodetectDependencies)
         {
-            assemblies.RegisterDependencies(assembly);
-            manifest.Dependencies.AddRange(assemblies.Select(asm => asm.Name).ToList());
+            assemblies.RegisterDependencies(assembly, out var deps);
+            manifest.Dependencies.AddRange(deps.Select(d => new AssemblyInfo { Name = d, EntryTag = d.Name, FileName = Path.GetFileName(Assembly.Load(d).Location) }));
             assemblies.Clear();
         }
 
         manifest.Packed = DateTime.UtcNow;
         var packedManifest = JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true });
-        if (config.Destination.ResolvePathArgs(out string destPath, out _))
+        if (Config.Destination.ResolvePathArgs(out string destPath, out _))
         {
             var outputPath = Path.Combine(destPath, $"{manifest.Name}.zip");
             using (var zipToOpen = new FileStream(outputPath, FileMode.Create))
@@ -72,14 +81,13 @@ public static class Packager
                     //  add each dependency assembly
                     foreach (var dep in manifest.Dependencies)
                     {
-                        var asmDependency = dep.EndsWith(".dll") ? dep : $"{dep}.dll";
+                        var asmDependency = dep.FileName;
                         var assemblySource = Path.Combine(sourcePath, asmDependency);
-                        archive.CreateEntryFromFile(assemblySource, asmDependency);
+                        archive.CreateEntryFromFile(assemblySource, dep.EntryTag);
                     }
                     //  add the extension assembly
-                    var asmExtension = $"{manifest.Assembly}.dll";
-                    var extensionSource = Path.Combine(sourcePath, asmExtension);
-                    archive.CreateEntryFromFile(extensionSource, asmExtension);
+                    var extensionSource = Path.Combine(sourcePath, manifest.Assembly.FileName);
+                    archive.CreateEntryFromFile(extensionSource, manifest.Assembly.EntryTag);
                     //  add the packed manifest file
                     var manifestEntry = archive.CreateEntry(Manifest.PACKAGE_JSON);
                     using (StreamWriter writer = new StreamWriter(manifestEntry.Open()))
@@ -91,8 +99,11 @@ public static class Packager
         }
         else
         {
-            throw new InvalidOperationException($"Could not resolve {config.Destination}");
+            Log($"Could not resolve {Config.Destination}");
+            return false;
         }
+
+        return true;
     }
 
     /// <summary>
@@ -100,12 +111,12 @@ public static class Packager
     /// </summary>
     /// <param name="config">The configuration to load the manifest from.</param>
     /// <param name="manifest">The manifest to load.</param>
-    public static void LoadManifest(Config config, out Manifest manifest)
+    public static void LoadManifest(out Manifest manifest)
     {
         //  does the config ext path exist?
-        if (!$"{config.Source}/{Manifest.PACKAGE_JSON}".ResolvePathArgs(out string path, out string file))
+        if (!$"{Config.Source}/{Manifest.PACKAGE_JSON}".ResolvePathArgs(out string path, out string file))
         {
-            throw new DirectoryNotFoundException($"Extension path not found: {config.Source}");
+            throw new DirectoryNotFoundException($"Extension path not found: {Config.Source}");
         }
 
         //  load the json file from the path
@@ -113,6 +124,23 @@ public static class Packager
         string json = File.ReadAllText(file);
         //  materialize the manifest
         manifest = JsonSerializer.Deserialize<Manifest>(json);
+
+        //  are we reading the .csproj file?
+        if (Config.ReadProject)
+        {
+            var projDir = Path.GetFullPath(Path.Combine(path, "../../../"));
+            if (!Project.Load(projDir, manifest))
+            {
+                Log("Could not load project file.");
+            }
+        }
     }
 
+    internal static void Log(string logMessage)
+    {
+        if (Config.LogManifest)
+        {
+            Logger.Log(logMessage);
+        }
+    }
 }

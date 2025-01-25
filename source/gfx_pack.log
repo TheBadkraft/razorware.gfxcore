@@ -1,0 +1,15 @@
+GfxCore Log: 1/24/2025 7:21:43 PM
+1/24/2025 7:21:44 PM: dev/GfxCore.Resources.Bar/bin/Debug/net9.0 ...
+1/24/2025 7:21:44 PM: Packed successfully.
+1/24/2025 7:21:44 PM: Manifest:
+     resource_pack            : Gfx Resource Pack
+     Assembly: gfx.resources.bar v1.0.0 (gfx.resources.bar :: gfx.resources.bar.dll): GfxResource
+     Version                  : 1.0.0-alpha.01+2025001
+     Packed                   : 1/25/2025 1:21:44 AM
+     Description              : A test resource extension mod
+     RazorWare                : Copyright 2025 RazorWare
+     Dependencies             :
+         Assembly: razorware.gfxcore.domain v1.0.0.0 (razorware.gfxcore.domain :: razorware.gfxcore.domain.dll)
+     gfx_resource_pack        : [test|demo]
+     Checksum                 : 
+

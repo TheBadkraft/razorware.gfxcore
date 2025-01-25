@@ -123,7 +123,26 @@ public class AssemblyRegistry : GfxRegistry<AssemblyName>, IAssemblyRegistry
             // Skip .NET assemblies
             if (!IsNetAssembly(dependency.Name) && !TryResolve(dependency.Name, out _))
             {
-                Register(dependency, dependency.FullName);
+                _ = Register(dependency, dependency.FullName);
+            }
+        }
+    }
+    /// <summary>
+    /// Register an assembly's dependencies
+    /// </summary>
+    /// <param name="assembly">The assembly to inspect</param>
+    /// <param name="dependencies">A list of dependencies by <see cref="AssemblyName"/></param>
+    /// <param name="autoRegister">Autoregister .Net dependencies</param>
+    public void RegisterDependencies(Assembly assembly, out List<AssemblyName> dependencies, bool autoRegister = false)
+    {
+        dependencies = new List<AssemblyName>();
+
+        foreach (AssemblyName dependency in assembly.GetReferencedAssemblies())
+        {
+            // Skip .NET assemblies
+            if (!IsNetAssembly(dependency.Name) && !TryResolve(dependency.Name, out _))
+            {
+                dependencies.Add(Register(dependency, dependency.FullName));
             }
         }
     }

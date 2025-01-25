@@ -25,7 +25,10 @@ public class ExtensionLoader
     /// </summary>
     internal DirectoryInfo ExtensionPath => new DirectoryInfo(ext_path);
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="registries"></param>
     public ExtensionLoader(RegistryManager registries)
     {
         Registries = registries;
@@ -92,7 +95,21 @@ public class ExtensionLoader
             goto DiscoverComplete;
         }
 
-    // LoadExtensions();
+        //  validate package manifests
+        foreach (var pkgManifest in _extPackages)
+        {
+            //  validate the package manifest
+            pkgManifest.ValidateAssemblies(Registries.Resolve<IAssemblyRegistry>());
+            if (pkgManifest.HasErrors)
+            {
+                //  check dependencies
+                //  load the assembly
+                //  ... and ...
+                //  register assemblies (AssemblyRegistry)
+                //  register extensions (ExtensionRegistry)
+            }
+        }
+
 
     DiscoverComplete:
         Log($"[GfxCore :: Bootstrap] Extension Discovery Complete");
@@ -116,8 +133,6 @@ public class ExtensionLoader
             {
                 //  add the package to the list of extensions
                 _extPackages.Add(pkgManifest);
-                //  validate manifest file
-
             }
             //  check dependencies (if any)
             //  load the assembly

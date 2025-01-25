@@ -22,6 +22,11 @@ public class Manifest
     [JsonPropertyName("name")]
     public string Name { get; set; } = "GfxExtension Name";
     /// <summary>
+    /// Get the package title.
+    /// </summary>
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = "GfxExtension Title";
+    /// <summary>
     /// Get the package version.
     /// </summary>
     [JsonPropertyName("version")]
@@ -37,10 +42,15 @@ public class Manifest
     [JsonPropertyName("author")]
     public string Author { get; set; } = "Your name or organization";
     /// <summary>
-    /// Get the package assembly.
+    /// Get the package copyright
+    /// </summary>
+    [JsonPropertyName("copy_right")]
+    public string Copyright { get; set; } = "Your name or organization";
+    /// <summary>
+    /// Get the package assembly name.
     /// </summary>
     [JsonPropertyName("assembly")]
-    public string Assembly { get; set; } = "AssemblyName";
+    public AssemblyInfo Assembly { get; set; } = new();
     /// <summary>
     /// Get decorated the entry class name.
     /// </summary>
@@ -53,7 +63,7 @@ public class Manifest
     /// Get the package dependencies.
     /// </summary>
     [JsonPropertyName("dependencies")]
-    public List<string> Dependencies { get; set; } = new();
+    public List<AssemblyInfo> Dependencies { get; set; } = new();
     /// <summary>
     /// Get the package assembly checksum.
     /// </summary>
@@ -94,18 +104,19 @@ public class Manifest
     public override string ToString()
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"{"",5}{"Name",-12}: {Name}");
-        sb.AppendLine($"{"",5}{"Packed",-12}: {Packed}");
-        sb.AppendLine($"{"",5}{"Version",-12}: {Version}");
-        sb.AppendLine($"{"",5}{"Description",-12}: {Description}");
-        sb.AppendLine($"{"",5}{"Author",-12}: {Author}");
-        sb.AppendLine($"{"",5}{"Assembly",-12}: {Assembly}");
-        sb.AppendLine($"{"",5}{"Dependencies",-12}:");
+        sb.AppendLine($"{"",5}{$"{Name}",-25}: {Title}");
+        sb.AppendLine($"{"",5}{$"{Assembly}",-25}: {EntryClass}");
+        sb.AppendLine($"{"",5}{"Version",-25}: {Version}");
+        sb.AppendLine($"{"",5}{"Packed",-25}: {Packed}");
+        sb.AppendLine($"{"",5}{"Description",-25}: {Description}");
+        sb.AppendLine($"{"",5}{$"{Author}",-25}: {Copyright}");
+        sb.AppendLine($"{"",5}{"Dependencies",-25}:");
         foreach (var dep in Dependencies)
         {
             sb.AppendLine($"{"",9}{dep}");
         }
-        sb.AppendLine($"{"",5}{"Checksum",-12}: {Checksum}");
+        sb.AppendLine($"{"",5}{Identifier,-25}: {(Tags.Any() ? $"[{string.Join("|", Tags)}]" : "")}");
+        sb.AppendLine($"{"",5}{"Checksum",-25}: {Checksum}");
 
         return sb.ToString();
     }

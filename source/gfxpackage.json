@@ -1,9 +1,15 @@
 {
   "name": "GfxExtension Name",
+  "title": "GfxExtension Title",
   "version": "1.0.0",
   "description": "A description for your extension",
   "author": "Your name or organization",
-  "assembly": "AssemblyName",
+  "copy_right": "Your name or organization",
+  "assembly": {
+    "assembly_name": "",
+    "entry_tag": "GfxExtension",
+    "file_name": "GfxExtension.dll"
+  },
   "entry_class": "DecoratedClassName",
   "dependencies": [],
   "checksum": "",
