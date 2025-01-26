@@ -57,3 +57,4 @@ obj/
 
 # gfx
 mods/
+*.log
