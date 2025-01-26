@@ -11,20 +11,13 @@ string path, file;
 Config config = null;
 Manifest manifest = null;
 
-/*  1/22/2025
-    Adding several features/enhancements
-    - gfxconfig.json:
-    [Y] - set log_manifest true && log_file with a file name, the 
-          packer will output all logging to that file
-    [Y] - set log_manifest true and no log_file, logging goes to 
-          the console
-    [Y] - read_csproj setting to read the .csproj file for assembly 
-          version, etc.
-    - gfxpackage.json:
-    [Y] - adding AssemblyInfo class for extension class and 
-          dependencies
-    [Y] - AssemblyInfo will contain a string AssemblyName as well 
-          as the package entry name
+/*  1/26/2025
+    TODO features/enhancements
+    - gfxpackage:
+    [ ] - update manifest using new or modified properties
+    [ ] - create manifest without packing the extension
+    [ ] - handling extension projects with nuget packages
+    [ ] - packaging complex extension models such as an SDK
     ---------------------------------------------------------------
 */
 

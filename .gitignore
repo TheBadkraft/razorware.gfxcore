@@ -50,5 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# c#
 bin/
 obj/
+
+# gfx
+mods/

@@ -1,13 +1,22 @@
 
-using System.Reflection;
 using System.Xml;
 
 using RazorWare.GfxCore.Utilities;
 
 namespace RazorWare.GfxCore.Extensibility;
 
+/// <summary>
+/// The project class.
+/// </summary>
 public static class Project
 {
+    /// <summary>
+    /// Load the cs project file and populate the manifest.
+    /// </summary>
+    /// <param name="path">The path to the cs project file.</param>
+    /// <param name="manifest">The manifest to populate.</param>
+    /// <returns>TRUE if the manifest was populated successfully; otherwise, FALSE.</returns>
+    /// <exception cref="FileNotFoundException"></exception>
     public static bool Load(string path, Manifest manifest)
     {
         string file = string.Empty;
