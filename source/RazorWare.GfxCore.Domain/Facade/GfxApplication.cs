@@ -27,11 +27,12 @@ public abstract partial class GfxApplication : IRuntime
     /// </summary>
     protected GfxApplication(bool testMode = false)
     {
+        //  load gfx bootstrap
         if ((_bootstrap = GfxBootstrap.Load(testMode, OnBootstrapInitialized)) == null)
         {
             throw new InvalidOperationException("The GfxCore bootstrap failed to load.");
         }
-
+        //  load extensions
         _bootstrap.LoadExtensions();
 
         if (!testMode)
