@@ -95,7 +95,7 @@ internal abstract class GfxBootstrap
     /// </summary>
     internal void LoadExtensions()
     {
-        _loader.DiscoverExtensions();
+        _loader.DiscoverExtensions(out var mods);
     }
 
     /// <summary>

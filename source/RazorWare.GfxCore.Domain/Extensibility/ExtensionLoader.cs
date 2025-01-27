@@ -1,9 +1,8 @@
 
-using System.IO.Compression;
 using System.Reflection;
-using System.Text.Json;
 using RazorWare.GfxCore.Events;
 using RazorWare.GfxCore.Registries;
+using RazorWare.GfxCore.Utilities;
 
 namespace RazorWare.GfxCore.Extensibility;
 
@@ -13,8 +12,8 @@ public class ExtensionLoader
 
     private static string ext_path;
 
-    //  the list of extensions
-    private static readonly List<PackageManifest> _extPackages = new();
+    //  the list of GfxExtensionInfo objects
+    private static readonly List<GfxExtensionInfo> _extensions = new();
 
     private RegistryManager Registries { get; init; }
 
@@ -36,78 +35,39 @@ public class ExtensionLoader
         Events = registry.Resolve<IEventPipeline>();
     }
 
-    /// <summary>
-    /// Open the package and extract the manifest.
-    /// </summary>
-    /// <param name="pkgFile">The package file to open.</param>
-    /// <param name="pkgManifest">The package manifest.</param>
-    /// <returns>TRUE if the package was opened successfully, otherwise FALSE.</returns>
-    public bool OpenPackage(FileInfo pkgFile, out PackageManifest pkgManifest)
-    {
-        //  obtain the package file stream
-        using var fs = pkgFile.OpenRead();
-        //  open the package archive
-        using var archive = new ZipArchive(fs, ZipArchiveMode.Read, false);
-        //  find the manifest file ("gfxpackage.json")
-        var manifest_entry = archive.GetEntry(Manifest.PACKAGE_JSON);
-        if (manifest_entry == null)
-        {
-            Log($"{"",13}Invalid Package :: Manifest Not Found");
-            pkgManifest = null;
-            return false;
-        }
-        //  deserialize the manifest file
-        Manifest manifest = JsonSerializer.Deserialize<Manifest>(manifest_entry.Open());
-        if (manifest == null)
-        {
-            Log($"{"",13}Invalid Package :: Manifest Invalid");
-            pkgManifest = null;
-            return false;
-        }
-        //  create the package manifest
-        //  exclude the manifest file from the entries
-        pkgManifest = new PackageManifest(manifest, archive.Entries.Where(e => e != manifest_entry));
-
-        return true;
-    }
-
     //  load the extensions - if testMode, only resolve dependencies,
     //  do not initialize the extensions
-    internal void DiscoverExtensions()
+    internal void DiscoverExtensions(out List<GfxExtensionInfo> mods)
     {
+        mods = null;
         Log($"[GfxCore :: Bootstrap] Begin Extension Discovery");
 
         var curr_dir = string.Empty;
         Log($"{"",5}{"Current Directory:",-25} {curr_dir = Directory.GetCurrentDirectory()}");
         Log($"{"",5}{"Extension Path:",-25} {ext_path = Path.Combine(curr_dir, EXTENSION_PATH)}");
 
-        if (!Directory.Exists(ext_path))
+        if (!ext_path.ResolvePathArgs(out ext_path, out _))
         {
             Log($"{"",5}Creating Extension Path: {ext_path}");
             Directory.CreateDirectory(ext_path);
         }
 
-        EnumerateExtensions();
+        EnumerateExtensions(out List<PackageManifest> packages);
+        IExtensionRegistry extensions = null;
         //  if no extensions found, we are done
-        if (!_extPackages.Any())
+        if (!packages.Any())
         {
             Log($"{"",5}{"No Extensions Found",-25}");
             goto DiscoverComplete;
         }
 
+        extensions = Registries.Resolve<IExtensionRegistry>();
+        mods = new();
         //  validate package manifests
-        foreach (var pkgManifest in _extPackages)
+        foreach (var pkgManifest in packages)
         {
-            //  validate the package manifest
-            pkgManifest.ValidateAssemblies(Registries.Resolve<IAssemblyRegistry>());
-            if (pkgManifest.HasErrors)
-            {
-                //  check dependencies
-                //  load the assembly
-                //  ... and ...
-                //  register assemblies (AssemblyRegistry)
-                //  register extensions (ExtensionRegistry)
-            }
+            //  load the extension
+            mods.Add(LoadExtensionInfo(pkgManifest));
         }
 
 
@@ -121,25 +81,57 @@ public class ExtensionLoader
     //      - a manifest file (gfxpackage.json)
     //      - the actual extension assembly (dll)
     //      - any other resources required by the extension (e.g. images, assemblies, etc.)
-    private void EnumerateExtensions()
+    private void EnumerateExtensions(out List<PackageManifest> packages)
     {
+        packages = new();
         Log($"{"",5}{"Enumerating Extensions:",-25}");
         //  not expecting directories ... just "*.zip" files
         foreach (var pkg in ExtensionPath.GetFiles("*.zip"))
         {
             Log($"{"",9}{"Found Package:",-25} {pkg.Name}");
             //  extract the package
-            if (OpenPackage(pkg, out PackageManifest pkgManifest))
+            if (PackageManifest.Unpack(Registries, pkg, out PackageManifest pkgManifest))
             {
                 //  add the package to the list of extensions
-                _extPackages.Add(pkgManifest);
+                packages.Add(pkgManifest);
             }
-            //  check dependencies (if any)
-            //  load the assembly
-            //  ... and ...
-            //  register assemblies (AssemblyRegistry)
-            //  register extensions (ExtensionRegistry)
         }
+    }
+
+    /// <summary>
+    /// Load the extension.
+    /// </summary>
+    private GfxExtensionInfo LoadExtensionInfo(PackageManifest manifest)
+    {
+        var assemblies = Registries.Resolve<IAssemblyRegistry>();
+        var extensions = Registries.Resolve<IExtensionRegistry>();
+
+        var ext = manifest.ExtAssembly;
+        var extAssembly = ext.Name;
+
+        //  get the assembly - I don't like iterating through all assemblies every time we want to get an assembly
+        var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == extAssembly);
+        if (assembly == null)
+        {
+            Log($"[*** ERROR ***]   Extension {ext.Name} not loaded into the application domain.");
+            return null;
+        }
+        //  get the extension type
+        var extType = assembly.GetTypes().FirstOrDefault(t => t.GetCustomAttribute<GfxExtensionAttribute>() != null);
+
+        if (extType == null)
+        {
+            Log($"[*** ERROR ***]   Extension {ext.Name} does not contain a GfxExtensionAttribute.");
+            return null;
+        }
+
+        //  register the extension
+        return new()
+        {
+            Assembly = ext,
+            ExtType = extType,
+            Metadata = extType.GetCustomAttribute<GfxExtensionAttribute>()
+        };
     }
 
     private void Log(string message)
