@@ -35,11 +35,30 @@ public class ExtensionLoader
         Events = registry.Resolve<IEventPipeline>();
     }
 
-    //  load the extensions - if testMode, only resolve dependencies,
-    //  do not initialize the extensions
-    internal void DiscoverExtensions(out List<GfxExtensionInfo> mods)
+    /// <summary>
+    /// Load the <see cref="GfxExtensionInfo"> objects
+    /// </summary>
+    /// <returns>A read-only collection of GfxExtensionInfo objects</returns>
+    internal IReadOnlyCollection<GfxExtensionInfo> LoadExtensions()
     {
-        mods = null;
+        DiscoverExtensions(out List<PackageManifest> packages);
+        IExtensionRegistry extensions = null;
+
+        extensions = Registries.Resolve<IExtensionRegistry>();
+        List<GfxExtensionInfo> extInfos = new();
+        //  validate package manifests
+        foreach (var pkgManifest in packages)
+        {
+            //  load the extension
+            extInfos.Add(LoadExtensionInfo(pkgManifest));
+        }
+
+        return extInfos;
+    }
+
+    //  load the extensions
+    private void DiscoverExtensions(out List<PackageManifest> packages)
+    {
         Log($"[GfxCore :: Bootstrap] Begin Extension Discovery");
 
         var curr_dir = string.Empty;
@@ -52,26 +71,13 @@ public class ExtensionLoader
             Directory.CreateDirectory(ext_path);
         }
 
-        EnumerateExtensions(out List<PackageManifest> packages);
-        IExtensionRegistry extensions = null;
+        EnumerateExtensions(out packages);
         //  if no extensions found, we are done
         if (!packages.Any())
         {
             Log($"{"",5}{"No Extensions Found",-25}");
-            goto DiscoverComplete;
         }
 
-        extensions = Registries.Resolve<IExtensionRegistry>();
-        mods = new();
-        //  validate package manifests
-        foreach (var pkgManifest in packages)
-        {
-            //  load the extension
-            mods.Add(LoadExtensionInfo(pkgManifest));
-        }
-
-
-    DiscoverComplete:
         Log($"[GfxCore :: Bootstrap] Extension Discovery Complete");
     }
 
@@ -97,10 +103,7 @@ public class ExtensionLoader
             }
         }
     }
-
-    /// <summary>
-    /// Load the extension.
-    /// </summary>
+    //  load the extension info
     private GfxExtensionInfo LoadExtensionInfo(PackageManifest manifest)
     {
         var assemblies = Registries.Resolve<IAssemblyRegistry>();
@@ -110,7 +113,7 @@ public class ExtensionLoader
         var extAssembly = ext.Name;
 
         //  get the assembly - I don't like iterating through all assemblies every time we want to get an assembly
-        var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == extAssembly);
+        var assembly = assemblies.ResolveAssembly(ext.Name);
         if (assembly == null)
         {
             Log($"[*** ERROR ***]   Extension {ext.Name} not loaded into the application domain.");
@@ -133,7 +136,7 @@ public class ExtensionLoader
             Metadata = extType.GetCustomAttribute<GfxExtensionAttribute>()
         };
     }
-
+    //  log a message
     private void Log(string message)
     {
         Events.Raise(new LogEvent(message));

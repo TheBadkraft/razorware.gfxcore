@@ -61,10 +61,10 @@ public class PackageManifest
         if (OpenPackage(out pkgManifest, archive) && pkgManifest.ValidateAssemblies())
         {
             var assemblies = registries.Resolve<IAssemblyRegistry>();
-            //  register the extension assembly
-            pkgManifest.RegisterExtensionAssembly(assemblies);
             //  register the dependency assemblies
             pkgManifest.RegisterDependencyAssemblies(assemblies);
+            //  register the extension assembly
+            pkgManifest.RegisterExtensionAssembly(assemblies);
         }
 
         return true;
@@ -175,7 +175,7 @@ public class PackageManifest
         if (TryLoadAssembly(ext, out assembly))
         {
             //  register the extension assembly
-            assemblies.Register(extAssembly, ext.EntryTag);
+            assemblies.Register(assembly, ext.EntryTag);
         }
     }
 

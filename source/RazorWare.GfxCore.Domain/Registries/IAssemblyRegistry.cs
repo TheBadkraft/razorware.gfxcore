@@ -33,6 +33,19 @@ public interface IAssemblyRegistry : IRegistry<AssemblyName>
     /// <returns>The assembly</returns>
     AssemblyName Resolve(string identifier, params string[] tags);
     /// <summary>
+    /// Resolve an assembly by identifier.
+    /// </summary>
+    /// <param name="identifier">The assembly identifier</param>
+    /// <param name="tags">[Optional] The assembly tags</param>
+    /// <returns>The assembly</returns>
+    Assembly ResolveAssembly(string identifier, params string[] tags);
+    /// <summary>
+    /// Resolve an assembly by name.
+    /// </summary>
+    /// <param name="assemblyName">The assembly name</param>
+    /// <returns>The assembly</returns>
+    Assembly ResolveAssembly(AssemblyName assemblyName);
+    /// <summary>
     /// Register an assembly's dependencies
     /// </summary>
     /// <remarks>

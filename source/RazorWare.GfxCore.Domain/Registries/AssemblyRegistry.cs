@@ -7,6 +7,8 @@ namespace RazorWare.GfxCore.Registries;
 /// </summary>
 public class AssemblyRegistry : GfxRegistry<AssemblyName>, IAssemblyRegistry
 {
+    private readonly Dictionary<AssemblyName, Assembly> _assemblies = new();
+
     /// <summary>
     /// Initializes the assembly registry.
     /// </summary>
@@ -19,34 +21,34 @@ public class AssemblyRegistry : GfxRegistry<AssemblyName>, IAssemblyRegistry
     /// Register an assembly to the framework
     /// </summary>
     /// <typeparam name="T">The assembly type</typeparam>
-    /// <param name="assembly">The assembly object</param>
+    /// <param name="asmName">The assembly name object</param>
     /// <param name="identifier">[Optional] The assembly identifier</param>
     /// <param name="tags">[Optional] The assembly tags</param>
     /// <returns>The assembly object</returns>
-    public T Register<T>(object assembly, string identifier = null, params string[] tags) where T : class
+    public T Register<T>(object asmName, string identifier = null, params string[] tags) where T : class
     {
-        identifier = identifier ?? assembly.GetType().Name;
-        return Register(assembly, identifier, tags) as T;
+        return Register(asmName, identifier, tags) as T;
     }
     /// <summary>
     /// Register an assembly to the framework
     /// </summary>
-    /// <param name="assembly">The assembly object</param>
+    /// <param name="asmName">The assembly name object</param>
     /// <param name="identifier">[Optional] The assembly identifier</param>
     /// <param name="tags">[Optional] The assembly tags</param>
     /// <returns>The assembly object</returns>
     /// <exception cref="ArgumentException"></exception>
-    public AssemblyName Register(object assembly, string identifier, params string[] tags)
+    public AssemblyName Register(object asmName, string identifier = null, params string[] tags)
     {
-        if (!(assembly is AssemblyName gfxAssembly))
+        if (!(asmName is AssemblyName gfxAssembly))
         {
-            throw new ArgumentException($"{assembly.GetType().Name} is not a valid assembly object.");
+            throw new ArgumentException($"{asmName.GetType().Name} is not a valid assembly object.");
         }
-
+        identifier ??= gfxAssembly.Name;
+        var keyType = asmName.GetType();
         var key = new RegistryKey(identifier, tags)
         {
-            InterfaceType = assembly.GetType(),
-            ObjectType = assembly.GetType()
+            InterfaceType = keyType,
+            ObjectType = keyType
         };
 
         if (!TryAdd(key, gfxAssembly))
@@ -54,7 +56,7 @@ public class AssemblyRegistry : GfxRegistry<AssemblyName>, IAssemblyRegistry
             throw new ArgumentException($"Registry key [{key}] already exists.");
         }
 
-        return assembly as AssemblyName;
+        return asmName as AssemblyName;
     }
     /// <summary>
     /// Register an assembly to the framework
@@ -66,6 +68,8 @@ public class AssemblyRegistry : GfxRegistry<AssemblyName>, IAssemblyRegistry
     public AssemblyName Register(Assembly assembly, string identifier = null, params string[] tags)
     {
         var asmName = assembly.GetName();
+        _assemblies[asmName] = assembly;
+
         return Register(asmName, asmName.Name, tags);
     }
     /// <summary>
@@ -101,6 +105,31 @@ public class AssemblyRegistry : GfxRegistry<AssemblyName>, IAssemblyRegistry
         }
 
         return assembly;
+    }
+    /// <summary>
+    /// Resolve an assembly by identifier and (optional) tags
+    /// </summary>
+    /// <param name="identifier">The assembly identifier</param>
+    /// <param name="tags">[Optional] The assembly tags</param>
+    /// <returns>The assembly</returns>
+    public Assembly ResolveAssembly(string identifier, params string[] tags)
+    {
+        Assembly assembly = default;
+        if (TryResolveKey(identifier, tags, out var key))
+        {
+            assembly = _assemblies[Get(key)];
+        }
+
+        return assembly;
+    }
+    /// <summary>
+    /// Resolve an assembly by assembly name
+    /// </summary>
+    /// <param name="assemblyName">The assembly name</param>
+    /// <returns>The assembly</returns>
+    public Assembly ResolveAssembly(AssemblyName assemblyName)
+    {
+        return _assemblies[assemblyName];
     }
     /// <summary>
     /// Register an assembly's dependencies

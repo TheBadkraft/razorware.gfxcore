@@ -17,7 +17,6 @@ namespace RazorWare.GfxCore.Runtime;
 internal abstract class GfxBootstrap
 {
     //  bootstrap the domain and load extensions
-
     //  assumption: the gfxcore.dll is in the same directory as the domain
     private const string GFX_CORE_DLL = "razorware.gfxcore.dll";
 
@@ -44,7 +43,7 @@ internal abstract class GfxBootstrap
     protected GfxBootstrap(bool testMode)
     {
         IsTestMode = testMode;
-        _registries = new();
+        _registries = Framework.Instance.Registries;
 
         //  now we notify that the bootstrap is initialized
         OnBootstrapInitialize(this);
@@ -95,7 +94,7 @@ internal abstract class GfxBootstrap
     /// </summary>
     internal void LoadExtensions()
     {
-        _loader.DiscoverExtensions(out var mods);
+        var extInfos = _loader.LoadExtensions();
     }
 
     /// <summary>
