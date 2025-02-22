@@ -14,7 +14,7 @@ public interface IGfxExtension
     /// <summary>
     /// The extension version
     /// </summary>
-    Version Version { get; }
+    GfxVersion Version { get; }
     /// <summary>
     /// Collection of required extensions
     /// </summary>

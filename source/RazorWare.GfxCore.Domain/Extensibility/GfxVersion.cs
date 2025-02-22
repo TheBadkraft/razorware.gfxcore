@@ -95,6 +95,19 @@ public class GfxVersion : IComparable<GfxVersion>
     }
 
     /// <summary>
+    /// Implicit conversion from string to <see cref="GfxVersion"/>.
+    /// </summary>
+    public static implicit operator GfxVersion(string version)
+    {
+        if (TryParse(version, out var gfxVersion))
+        {
+            return gfxVersion;
+        }
+
+        throw new FormatException("The version string was not in a correct format.");
+    }
+
+    /// <summary>
     /// Try to parse the version string into a GfxVersion.
     /// </summary>
     /// <param name="version">The version string to parse.</param>

@@ -4,7 +4,7 @@ using RazorWare.GfxCore.Extensibility;
 namespace GfxCore.Systems.Foo;
 
 
-[GfxExtension(typeof(GfxResource))]
+[GfxExtension(typeof(GfxResource), Type = GfxExtensionType.Resource)]
 public class GfxResource : IGfxExtension
 {
     /// <summary>
@@ -14,9 +14,9 @@ public class GfxResource : IGfxExtension
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public Version Version => new(1, 0, 0);
+    public GfxVersion Version { get; } =     ;
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public List<GfxExtensionInfo> Requires { get; }
+    public List<GfxExtensionInfo> Requires { get; } = new();
 }

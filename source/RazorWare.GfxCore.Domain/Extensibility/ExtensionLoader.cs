@@ -14,15 +14,19 @@ public class ExtensionLoader
 
     //  the list of GfxExtensionInfo objects
     private static readonly List<GfxExtensionInfo> _extensions = new();
-
+    //  the registry manager
     private RegistryManager Registries { get; init; }
-
+    //  the event pipeline
     private IEventPipeline Events { get; init; }
 
     /// <summary>
     /// Get the extension path.
     /// </summary>
     internal DirectoryInfo ExtensionPath => new DirectoryInfo(ext_path);
+    /// <summary>
+    /// Get the list of <see cref="GfxExtensionInfo"> objects.
+    /// </summary>
+    internal IReadOnlyCollection<GfxExtensionInfo> Extensions => _extensions.AsReadOnly();
 
     /// <summary>
     /// 
@@ -39,21 +43,14 @@ public class ExtensionLoader
     /// Load the <see cref="GfxExtensionInfo"> objects
     /// </summary>
     /// <returns>A read-only collection of GfxExtensionInfo objects</returns>
-    internal IReadOnlyCollection<GfxExtensionInfo> LoadExtensions()
+    internal void EnumerateExtInfo()
     {
         DiscoverExtensions(out List<PackageManifest> packages);
-        IExtensionRegistry extensions = null;
-
-        extensions = Registries.Resolve<IExtensionRegistry>();
-        List<GfxExtensionInfo> extInfos = new();
-        //  validate package manifests
         foreach (var pkgManifest in packages)
         {
             //  load the extension
-            extInfos.Add(LoadExtensionInfo(pkgManifest));
+            _extensions.Add(LoadExtensionInfo(pkgManifest));
         }
-
-        return extInfos;
     }
 
     //  load the extensions
